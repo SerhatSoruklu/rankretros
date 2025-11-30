@@ -2,6 +2,12 @@
 @import url('https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght@400;500;600&display=swap');
 @import url('https://fonts.googleapis.com/icon?family=Material+Icons');
 @import '@angular/material/prebuilt-themes/deeppurple-amber.css';
+@import '@angular/cdk/overlay-prebuilt.css';
+
+html, body {
+  margin: 0;
+  padding: 0;
+}
 
 .material-icon {
   font-family: 'Material Symbols Outlined';
