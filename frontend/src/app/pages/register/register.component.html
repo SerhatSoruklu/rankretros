@@ -1,0 +1,31 @@
+<section class="auth-card">
+  <div>
+    <p class="eyebrow">Get started</p>
+    <h1>Create your account</h1>
+    <p class="hint">Owners can register hotels and receive vote callbacks.</p>
+  </div>
+
+  <form [formGroup]="form" (ngSubmit)="submit()">
+    <label>
+      Username
+      <input type="text" formControlName="username" placeholder="hotelboss" />
+    </label>
+
+    <label>
+      Email
+      <input type="email" formControlName="email" placeholder="you@example.com" />
+    </label>
+
+    <label>
+      Password
+      <input type="password" formControlName="password" placeholder="At least 6 characters" />
+    </label>
+
+    <button type="submit" [disabled]="loading">
+      {{ loading ? 'Creating account…' : 'Create account' }}
+    </button>
+
+    <p *ngIf="error" class="error">{{ error }}</p>
+    <p class="hint">Already have an account? <a routerLink="/login">Sign in</a></p>
+  </form>
+</section>

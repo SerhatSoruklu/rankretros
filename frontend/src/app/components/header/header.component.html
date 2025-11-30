@@ -1,0 +1,33 @@
+<header class="app-header">
+  <div class="brand">
+    <a routerLink="/">RankRetros</a>
+  </div>
+  <div class="auth">
+    <ng-container *ngIf="auth.user; else guest">
+      <span class="user-pill">
+        <mat-icon>person</mat-icon>
+        <span class="user-name">{{ auth.user!.username }}</span>
+        <span class="dot" aria-hidden="true"></span>
+        <span class="user-email">{{ auth.user!.email }}</span>
+      </span>
+      <a routerLink="/dashboard" class="primary">
+        <mat-icon>dashboard</mat-icon>
+        Dashboard
+      </a>
+      <button type="button" (click)="logout()" class="ghost">
+        <mat-icon>logout</mat-icon>
+        Logout
+      </button>
+    </ng-container>
+    <ng-template #guest>
+      <a routerLink="/login" class="ghost">
+        <mat-icon>login</mat-icon>
+        Login
+      </a>
+      <a routerLink="/register" class="primary">
+        <mat-icon>person_add</mat-icon>
+        Register
+      </a>
+    </ng-template>
+  </div>
+</header>

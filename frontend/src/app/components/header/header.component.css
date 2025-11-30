@@ -1,0 +1,151 @@
+.app-header {
+  display: grid;
+  grid-template-columns: auto 1fr auto;
+  align-items: center;
+  gap: 1rem;
+  padding: 1rem 20px;
+  color: #f7f9ff;
+  padding-bottom: 40px;
+}
+
+.brand a {
+  font-weight: 800;
+  color: #f7f9ff;
+  text-decoration: none;
+  font-size: 2rem;
+}
+
+.auth {
+  display: flex;
+  align-items: center;
+  gap: 0.6rem;
+  justify-self: end;
+}
+
+.ghost {
+  color: #c8d2f0;
+  text-decoration: none;
+  padding: 0.5rem 0.9rem;
+  border-radius: 8px;
+  border: 1px solid #1f2844;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.35rem;
+  transition: all 0.2s ease;
+  line-height: 1;
+}
+
+.primary {
+  color: #0c1224;
+  background: #8ea2ff;
+  padding: 0.65rem 1.1rem;
+  border-radius: 8px;
+  text-decoration: none;
+  font-weight: 700;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.35rem;
+  transition: all 0.2s ease;
+  line-height: 1;
+}
+
+.user-pill {
+  background: #141c33;
+  padding: 0.55rem 0.95rem;
+  border-radius: 999px;
+  color: #8ea2ff;
+  display: inline-flex;
+  align-items: center;
+  gap: 0.35rem;
+}
+
+.user-pill .mat-icon {
+  font-size: 24px;
+  height: 24px;
+  width: 24px;
+  color: #8ea2ff;
+}
+
+.user-name {
+  font-weight: 700;
+}
+
+.dot {
+  display: inline-block;
+  width: 10px;
+  height: 10px;
+  border-radius: 999px;
+  background: #2dd4bf;
+  box-shadow: 0 0 8px rgba(45, 212, 191, 0.8), 0 0 14px rgba(45, 212, 191, 0.4);
+  animation: pulse 1.4s infinite ease-in-out;
+}
+
+.user-email {
+  color: #d6defc;
+}
+
+@keyframes pulse {
+  0% {
+    transform: scale(1);
+    opacity: 1;
+  }
+  50% {
+    transform: scale(1.15);
+    opacity: 0.8;
+  }
+  100% {
+    transform: scale(1);
+    opacity: 1;
+  }
+}
+
+.ghost:hover {
+  border-color: #8ea2ff;
+  color: #f7f9ff;
+  box-shadow: 0 4px 14px rgba(0, 0, 0, 0.25);
+}
+
+.primary:hover {
+  background: #9fb2ff;
+  box-shadow: 0 6px 16px rgba(142, 162, 255, 0.35);
+}
+
+button {
+  background: transparent;
+  border: 1px solid #1f2844;
+  color: #c8d2f0;
+  padding: 0.65rem 1.1rem;
+  border-radius: 8px;
+  cursor: pointer;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.35rem;
+  line-height: 1;
+}
+
+.primary .mat-icon,
+.ghost .mat-icon,
+button .mat-icon {
+  font-size: 20px;
+  height: 20px;
+  width: 20px;
+  line-height: 1;
+}
+
+@media (max-width: 720px) {
+  .app-header {
+    grid-template-columns: 1fr;
+    grid-auto-rows: auto;
+  }
+
+  nav {
+    justify-content: flex-start;
+  }
+
+  .auth {
+    justify-content: flex-start;
+  }
+}

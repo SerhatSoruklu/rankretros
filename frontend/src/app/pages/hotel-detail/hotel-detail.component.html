@@ -1,0 +1,31 @@
+<section class="card">
+  <div *ngIf="loading">Loading hotel…</div>
+  <div *ngIf="error" class="error">{{ error }}</div>
+
+  <ng-container *ngIf="!loading && !error && hotel">
+    <div class="header">
+      <div>
+        <p class="eyebrow">Hotel</p>
+        <h1>{{ hotel.name }}</h1>
+        <p class="slug">{{ hotel.slug }}</p>
+      </div>
+      <div class="votes">{{ hotel.totalVotes || 0 }} votes</div>
+    </div>
+    <p class="description">{{ hotel.description || 'No description provided.' }}</p>
+
+    <div class="meta">
+      <div>
+        <h3>Rewards per vote</h3>
+        <ul>
+          <li>Credits: {{ hotel.rewards?.credits || 0 }}</li>
+          <li>Diamonds: {{ hotel.rewards?.diamonds || 0 }}</li>
+          <li>Duckets: {{ hotel.rewards?.duckets || 0 }}</li>
+        </ul>
+      </div>
+      <div>
+        <h3>Callback URL</h3>
+        <code>{{ hotel.callbackUrl }}</code>
+      </div>
+    </div>
+  </ng-container>
+</section>

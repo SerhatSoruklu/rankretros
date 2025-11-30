@@ -1,0 +1,58 @@
+<section class="card">
+  <div class="header">
+    <div>
+      <p class="eyebrow">Owner</p>
+      <h1>Register a hotel</h1>
+      <p class="hint">Set your callback URL and rewards for votes.</p>
+    </div>
+  </div>
+
+  <form [formGroup]="form" (ngSubmit)="submit()">
+    <div class="grid">
+      <label>
+        Name
+        <input type="text" formControlName="name" placeholder="Habbo Retro" />
+      </label>
+      <label>
+        Slug
+        <input type="text" formControlName="slug" placeholder="habbo-retro" />
+      </label>
+      <label>
+        Banner URL
+        <input type="url" formControlName="bannerUrl" placeholder="https://..." />
+      </label>
+      <label>
+        Callback URL
+        <input type="url" formControlName="callbackUrl" placeholder="https://hotel.com/vote-callback" />
+      </label>
+    </div>
+
+    <label class="full">
+      Description
+      <textarea rows="3" formControlName="description" placeholder="Tell players about your hotel"></textarea>
+    </label>
+
+    <fieldset formGroupName="rewards" class="rewards">
+      <legend>Rewards per vote</legend>
+      <label>
+        Credits
+        <input type="number" formControlName="credits" min="0" />
+      </label>
+      <label>
+        Diamonds
+        <input type="number" formControlName="diamonds" min="0" />
+      </label>
+      <label>
+        Duckets
+        <input type="number" formControlName="duckets" min="0" />
+      </label>
+    </fieldset>
+
+    <button type="submit" [disabled]="loading">
+      {{ loading ? 'Saving…' : 'Create hotel' }}
+    </button>
+
+    <p *ngIf="error" class="error">{{ error }}</p>
+    <p *ngIf="success" class="success">{{ success }}</p>
+  </form>
+</section>

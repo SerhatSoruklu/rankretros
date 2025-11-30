@@ -1,0 +1,62 @@
+.backdrop {
+  position: fixed;
+  inset: 0;
+  background: rgba(0, 0, 0, 0.6);
+  display: grid;
+  place-items: center;
+  z-index: 1000;
+}
+
+.dialog {
+  background: linear-gradient(145deg, #0f162b, #0c1224);
+  border: 1px solid #1f2844;
+  border-radius: 16px;
+  padding: 1.5rem;
+  width: min(460px, 92vw);
+  color: #f7f9ff;
+  box-shadow: 0 20px 60px rgba(0, 0, 0, 0.45);
+}
+
+.actions {
+  display: flex;
+  justify-content: flex-end;
+  gap: 0.65rem;
+  margin-top: 1rem;
+}
+
+.actions .pill {
+  border: 1px solid #2a3353;
+  background: #0c1224;
+  color: #f7f9ff;
+  padding: 0.55rem 0.95rem;
+  border-radius: 12px;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  display: inline-flex;
+  align-items: center;
+  gap: 0.35rem;
+}
+
+.actions .pill:hover {
+  border-color: #8ea2ff;
+  box-shadow: 0 6px 18px rgba(0, 0, 0, 0.25);
+}
+
+.actions .pill.danger {
+  border-color: #ff6b6b;
+  background: rgba(255, 107, 107, 0.12);
+  color: #ffb4b4;
+}
+
+.actions .pill.danger:hover {
+  box-shadow: 0 6px 18px rgba(255, 107, 107, 0.25);
+}
+.dialog h3 {
+  margin: 0 0 0.35rem;
+  font-size: 1.1rem;
+}
+
+.dialog p {
+  margin: 0;
+  color: #c8d2f0;
+}

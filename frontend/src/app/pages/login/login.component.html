@@ -1,0 +1,26 @@
+<section class="auth-card">
+  <div>
+    <p class="eyebrow">Welcome back</p>
+    <h1>Sign in to RankRetros</h1>
+    <p class="hint">Access your dashboard and manage your hotel listing.</p>
+  </div>
+
+  <form [formGroup]="form" (ngSubmit)="submit()">
+    <label>
+      Email
+      <input type="email" formControlName="email" placeholder="you@example.com" />
+    </label>
+
+    <label>
+      Password
+      <input type="password" formControlName="password" placeholder="••••••••" />
+    </label>
+
+    <button type="submit" [disabled]="loading">
+      {{ loading ? 'Signing in…' : 'Sign in' }}
+    </button>
+
+    <p *ngIf="error" class="error">{{ error }}</p>
+    <p class="hint">No account? <a routerLink="/register">Create one</a></p>
+  </form>
+</section>

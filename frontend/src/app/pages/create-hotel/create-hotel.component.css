@@ -1,0 +1,104 @@
+.card {
+  max-width: 820px;
+  margin: 0 auto;
+  background: #0f162b;
+  border: 1px solid #1f2844;
+  border-radius: 12px;
+  padding: 1.5rem;
+  color: #f7f9ff;
+}
+
+.header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 1rem;
+}
+
+.eyebrow {
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+  font-size: 0.8rem;
+  color: #8ea2ff;
+  margin: 0 0 0.35rem;
+}
+
+.hint {
+  color: #8ea2ff;
+  margin: 0.25rem 0 1rem;
+}
+
+form {
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+}
+
+.grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+  gap: 0.75rem;
+}
+
+label {
+  display: flex;
+  flex-direction: column;
+  gap: 0.35rem;
+  font-weight: 600;
+  color: #c8d2f0;
+}
+
+input,
+textarea {
+  padding: 0.75rem;
+  border-radius: 10px;
+  border: 1px solid #1f2844;
+  background: #0c1224;
+  color: #f7f9ff;
+}
+
+textarea {
+  resize: vertical;
+}
+
+.full {
+  width: 100%;
+}
+
+.rewards {
+  border: 1px dashed #1f2844;
+  border-radius: 10px;
+  padding: 0.75rem;
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(160px, 1fr));
+  gap: 0.75rem;
+}
+
+legend {
+  color: #8ea2ff;
+  padding: 0 0.35rem;
+}
+
+button {
+  padding: 0.85rem;
+  border-radius: 10px;
+  border: none;
+  background: #8ea2ff;
+  color: #0c1224;
+  font-weight: 700;
+  cursor: pointer;
+  align-self: flex-start;
+}
+
+button:disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
+}
+
+.error {
+  color: #ffb4b4;
+}
+
+.success {
+  color: #9ef7c7;
+}

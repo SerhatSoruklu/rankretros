@@ -1,0 +1,14 @@
+<div class="backdrop">
+  <div class="dialog">
+    <h3>{{ title }}</h3>
+    <p>{{ description }}</p>
+    <div class="actions">
+      <button type="button" class="pill ghost" (click)="cancel.emit()">
+        <span class="material-icon">close</span>{{ cancelLabel }}
+      </button>
+      <button type="button" class="pill danger" (click)="confirm.emit()">
+        <span class="material-icon">warning</span>{{ confirmLabel }}
+      </button>
+    </div>
+  </div>
+</div>

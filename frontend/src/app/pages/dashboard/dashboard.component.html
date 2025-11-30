@@ -1,0 +1,302 @@
+<section class="dashboard">
+  <div class="dash-header">
+    <div>
+      <p class="eyebrow">Servers</p>
+      <h1>Your servers</h1>
+      <p class="hint">Manage listings, callbacks, rewards, and performance.</p>
+    </div>
+  </div>
+
+  <nav class="tab-bar">
+    <button class="tab" [class.active]="activeTab === 'dashboard'" (click)="setTab('dashboard')" type="button">
+      <span class="material-icon">dashboard</span> Overview
+    </button>
+    <button class="tab" [class.active]="activeTab === 'add'" (click)="setTab('add')" type="button">
+      <span class="material-icon">add_circle</span> Add server
+    </button>
+    <button class="tab" [class.active]="activeTab === 'list'" (click)="setTab('list')" type="button">
+      <span class="material-icon">dns</span> My servers
+    </button>
+    <button class="tab" [class.active]="activeTab === 'settings'" (click)="setTab('settings')" type="button">
+      <span class="material-icon">settings</span> Settings
+    </button>
+  </nav>
+
+  <div class="layout">
+    <aside class="sidebar">
+      <h3>My servers</h3>
+      <div class="hotel-list">
+        <div
+          *ngFor="let hotel of hotels"
+          class="hotel-item"
+          [class.active]="hotel === selectedHotel"
+          (click)="selectHotel(hotel); setTab('dashboard')"
+        >
+          <div>
+            <div class="hotel-name">{{ hotel.name }}</div>
+            <div class="hotel-slug">{{ hotel.slug }}</div>
+          </div>
+          <div class="votes">{{ hotel.totalVotes || 0 }} votes</div>
+        </div>
+        <p *ngIf="!hotels.length" class="empty">No servers yet.</p>
+        <p *ngIf="error" class="empty error">{{ error }}</p>
+      </div>
+    </aside>
+
+    <div class="content">
+      <div class="panel charts" *ngIf="activeTab === 'dashboard'">
+        <div class="panel-header">
+          <div>
+            <p class="eyebrow">Overview</p>
+            <h2><span class="material-icon">monitoring</span> Performance (last 31 days)</h2>
+            <p class="hint">Sampled data until live stats are wired.</p>
+          </div>
+        </div>
+        <div class="chart-grid" [class.dimmed]="!selectedHotel">
+          <div class="chart-card">
+            <div class="chart-title"><span class="material-icon">trending_up</span> Votes</div>
+            <div #votesChart></div>
+          </div>
+          <div class="chart-card">
+            <div class="chart-title"><span class="material-icon">bar_chart</span> Listing views</div>
+            <div #viewsChart></div>
+          </div>
+          <div class="chart-card full">
+            <div class="chart-title"><span class="material-icon">pie_chart</span> Rewards mix</div>
+            <div #rewardsChart></div>
+          </div>
+          <div class="no-data" *ngIf="!selectedHotel">Select a server to view charts.</div>
+        </div>
+      </div>
+
+      <div class="panel" *ngIf="activeTab === 'add'">
+        <div class="panel-header">
+          <div>
+            <p class="eyebrow">Server</p>
+            <h2><span class="material-icon">add_business</span> Add server</h2>
+            <p class="hint">Choose a server type to register.</p>
+          </div>
+        </div>
+        <div *ngIf="pool === 'pick'" class="pool-grid">
+          <button type="button" class="pool-card" (click)="selectPool('habbo')">
+            <div class="pool-title"><span class="material-icon">apartment</span> Habbo Hotel</div>
+            <p>Create or manage retro hotel listings.</p>
+          </button>
+          <button type="button" class="pool-card" (click)="selectPool('runescape')">
+            <div class="pool-title"><span class="material-icon">swords</span> RuneScape</div>
+            <p>Coming soon. Callbacks and rewards in progress.</p>
+          </button>
+          <button type="button" class="pool-card" (click)="selectPool('minecraft')">
+            <div class="pool-title"><span class="material-icon">gavel</span> Minecraft</div>
+            <p>Coming soon. Votes and server pings in progress.</p>
+          </button>
+        </div>
+
+        <div *ngIf="pool === 'habbo'">
+          <div class="pool-header">
+            <button class="pill ghost" type="button" (click)="selectPool('pick')">
+              <span class="material-icon">arrow_back</span> Server pools
+            </button>
+            <span class="pill primary">Habbo Hotel</span>
+          </div>
+          <app-create-hotel (hotelCreated)="onHotelCreated($event)"></app-create-hotel>
+        </div>
+
+        <div *ngIf="pool === 'runescape' || pool === 'minecraft'" class="coming-soon">
+          <p class="eyebrow">Coming soon</p>
+          <h3>{{ pool === 'runescape' ? 'RuneScape' : 'Minecraft' }} servers</h3>
+          <p class="hint">We’re wiring callbacks and rewards for this game type.</p>
+          <button class="pill ghost" type="button" (click)="selectPool('pick')">
+            <span class="material-icon">arrow_back</span> Back to server pools
+          </button>
+        </div>
+      </div>
+
+      <div class="panel" *ngIf="activeTab === 'list'">
+        <div class="panel-header">
+          <div>
+            <p class="eyebrow">My servers</p>
+            <h2>Hotels you own</h2>
+            <p class="hint">Quick overview of your servers.</p>
+          </div>
+        </div>
+
+        <div class="card-grid" *ngIf="hotels.length">
+          <div
+            class="server-card"
+            *ngFor="let hotel of hotels"
+            [class.active]="hotel === selectedHotel"
+          >
+            <div class="server-header">
+              <div>
+                <div class="hotel-name">{{ hotel.name }}</div>
+                <div class="hotel-slug">{{ hotel.slug }}</div>
+              </div>
+              <span class="votes">{{ hotel.totalVotes || 0 }} votes</span>
+            </div>
+
+            <div class="details">
+              <div class="detail-line">
+                <span class="label">Description</span>
+                <span class="value">{{ hotel.description || '—' }}</span>
+              </div>
+              <div class="detail-line">
+                <span class="label">Banner URL</span>
+                <span class="value">{{ hotel.bannerUrl || '—' }}</span>
+              </div>
+              <div class="detail-line">
+                <span class="label">Callback URL</span>
+                <span class="value">{{ hotel.callbackUrl || '—' }}</span>
+              </div>
+              <div class="detail-line rewards">
+                <span class="label">Rewards</span>
+                <span class="badge credit">Credits {{ hotel.rewards?.credits || 0 }}</span>
+                <span class="badge diamond">Diamonds {{ hotel.rewards?.diamonds || 0 }}</span>
+                <span class="badge duckets">Duckets {{ hotel.rewards?.duckets || 0 }}</span>
+              </div>
+              <div class="meta">
+                <span><span class="material-icon">visibility</span>{{ hotel.views || 0 }} views</span>
+                <span><span class="material-icon">event</span>{{ hotel.createdAt | date:'medium' }}</span>
+              </div>
+            </div>
+
+            <div *ngIf="editingId !== (hotel._id || hotel.id); else editForm" class="card-actions">
+              <button type="button" class="pill ghost" (click)="startEdit(hotel)">Edit</button>
+              <button type="button" class="pill danger" (click)="deleteHotel(hotel)">Delete</button>
+              <button type="button" class="pill" (click)="selectHotel(hotel); setTab('dashboard')">View</button>
+            </div>
+
+            <ng-template #editForm>
+              <div class="edit-grid">
+                <label>
+                  Name
+                  <input [(ngModel)]="editingModel.name" />
+                </label>
+                <label>
+                  Slug
+                  <input [(ngModel)]="editingModel.slug" />
+                </label>
+                <label>
+                  Description
+                  <textarea rows="2" [(ngModel)]="editingModel.description"></textarea>
+                </label>
+                <label>
+                  Banner URL
+                  <input [(ngModel)]="editingModel.bannerUrl" />
+                </label>
+                <label>
+                  Callback URL
+                  <input [(ngModel)]="editingModel.callbackUrl" />
+                </label>
+                <div class="reward-row">
+                  <label>Credits <input type="number" [(ngModel)]="editingModel.rewards.credits" /></label>
+                  <label>Diamonds <input type="number" [(ngModel)]="editingModel.rewards.diamonds" /></label>
+                  <label>Duckets <input type="number" [(ngModel)]="editingModel.rewards.duckets" /></label>
+                </div>
+              </div>
+              <div class="card-actions">
+                <button type="button" class="pill primary" (click)="saveEdit(hotel)">Save</button>
+                <button type="button" class="pill ghost" (click)="cancelEdit()">Cancel</button>
+              </div>
+            </ng-template>
+          </div>
+        </div>
+        <p *ngIf="!hotels.length && !loading" class="empty">No servers yet.</p>
+        <p *ngIf="error" class="empty error">{{ error }}</p>
+      </div>
+
+      <div class="panel" *ngIf="activeTab === 'settings'">
+        <div class="panel-header">
+          <div>
+            <p class="eyebrow">Account</p>
+            <h2><span class="material-icon">person</span> Settings</h2>
+            <p class="hint">Update your profile, password, or delete your account.</p>
+          </div>
+          <button class="pill ghost" type="button" (click)="logout()">
+            <span class="material-icon">logout</span> Logout
+          </button>
+        </div>
+
+        <div class="settings-grid">
+          <form class="settings-card" (ngSubmit)="saveProfile()">
+            <h3><span class="material-icon">badge</span> Profile</h3>
+            <mat-form-field appearance="fill">
+              <mat-label>Username</mat-label>
+              <input matInput [(ngModel)]="profile.username" name="username" required />
+            </mat-form-field>
+            <mat-form-field appearance="fill">
+              <mat-label>Email</mat-label>
+              <input matInput type="email" [(ngModel)]="profile.email" name="email" required />
+            </mat-form-field>
+            <button mat-raised-button color="primary" class="settings-btn" type="submit">
+              <mat-icon>save</mat-icon>
+              Save profile
+            </button>
+            <div *ngIf="profileMessage" class="alert success">{{ profileMessage }}</div>
+            <div *ngIf="profileError" class="alert error">{{ profileError }}</div>
+          </form>
+
+          <form class="settings-card" (ngSubmit)="updatePassword()">
+            <h3><span class="material-icon">lock</span> Password</h3>
+            <mat-form-field appearance="fill">
+              <mat-label>Current password</mat-label>
+              <input
+                matInput
+                [type]="showCurrent ? 'text' : 'password'"
+                [(ngModel)]="passwordForm.currentPassword"
+                name="currentPassword"
+                required
+                autocomplete="current-password"
+              />
+              <button mat-icon-button matSuffix type="button" (click)="showCurrent = !showCurrent">
+                <mat-icon>{{ showCurrent ? 'visibility_off' : 'visibility' }}</mat-icon>
+              </button>
+            </mat-form-field>
+            <mat-form-field appearance="fill">
+              <mat-label>New password</mat-label>
+              <input
+                matInput
+                [type]="showNew ? 'text' : 'password'"
+                [(ngModel)]="passwordForm.newPassword"
+                name="newPassword"
+                required
+                autocomplete="new-password"
+              />
+              <button mat-icon-button matSuffix type="button" (click)="showNew = !showNew">
+                <mat-icon>{{ showNew ? 'visibility_off' : 'visibility' }}</mat-icon>
+              </button>
+            </mat-form-field>
+            <button
+              mat-raised-button
+              color="primary"
+              class="settings-btn"
+              type="submit"
+              [disabled]="passwordLoading"
+            >
+              <mat-icon>vpn_key</mat-icon>
+              {{ passwordLoading ? 'Updating…' : 'Update password' }}
+            </button>
+            <div *ngIf="passwordMessage" class="alert success">{{ passwordMessage }}</div>
+            <div *ngIf="passwordError" class="alert error">{{ passwordError }}</div>
+          </form>
+
+          <div class="settings-card danger-card">
+            <h3><span class="material-icon">warning</span> Delete account</h3>
+            <p class="hint">This will delete your account and all your listings/servers.</p>
+            <button class="pill danger" type="button" (click)="confirmDeleteAccount()">Delete account</button>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <app-confirm-dialog
+    *ngIf="showDeleteDialog"
+    title="Delete account?"
+    description="This will remove your account and all your servers permanently."
+    confirmLabel="Delete account"
+    cancelLabel="Cancel"
+    (confirm)="deleteAccount()"
+    (cancel)="cancelDelete()"
+  ></app-confirm-dialog>
+</section>

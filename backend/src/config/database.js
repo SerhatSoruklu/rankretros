@@ -2,10 +2,12 @@ const mongoose = require('mongoose');
 const logger = require('../utils/logger');
 
 async function connectDb() {
-  const uri = process.env.MONGO_URI;
+  const uri = process.env.MONGO_URI || 'mongodb://127.0.0.1:27017/rankretros';
 
-  if (!uri) {
-    throw new Error('MONGO_URI is not set in environment variables');
+  if (!process.env.MONGO_URI) {
+    logger.warn(
+      'MONGO_URI is not set; falling back to local MongoDB at mongodb://127.0.0.1:27017/rankretros'
+    );
   }
 
   mongoose.set('strictQuery', true);

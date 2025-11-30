@@ -13,6 +13,7 @@ backend/.env.*.local
 backend/dist/
 frontend/dist/
 frontend/.angular/
+frontend/src/environments/environment*.ts
 
 # VS Code
 .vscode/
@@ -24,4 +25,3 @@ Thumbs.db
 
 # Angular cache
 frontend/.angular/cache/
-
