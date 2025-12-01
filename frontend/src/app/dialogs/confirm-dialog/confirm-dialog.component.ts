@@ -13,6 +13,7 @@ export class ConfirmDialogComponent {
   @Input() description = 'This action cannot be undone.';
   @Input() confirmLabel = 'Confirm';
   @Input() cancelLabel = 'Cancel';
+  @Input() loading = false;
   @Output() confirm = new EventEmitter<void>();
   @Output() cancel = new EventEmitter<void>();
 }

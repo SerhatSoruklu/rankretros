@@ -51,6 +51,25 @@
 .actions .pill.danger:hover {
   box-shadow: 0 6px 18px rgba(255, 107, 107, 0.25);
 }
+
+.actions .pill.danger.loading {
+  opacity: 0.7;
+  cursor: wait;
+  box-shadow: none;
+}
+
+.actions .pill.danger.loading .material-icon {
+  animation: spin 1s linear infinite;
+}
+
+@keyframes spin {
+  0% {
+    transform: rotate(0deg);
+  }
+  100% {
+    transform: rotate(360deg);
+  }
+}
 .dialog h3 {
   margin: 0 0 0.35rem;
   font-size: 1.1rem;

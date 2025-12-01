@@ -32,11 +32,24 @@
           [class.active]="hotel === selectedHotel"
           (click)="selectHotel(hotel); setTab('dashboard')"
         >
-          <div>
-            <div class="hotel-name">{{ hotel.name }}</div>
-            <div class="hotel-slug">{{ hotel.slug }}</div>
+          <div class="hotel-header row">
+            <div class="hotel-title-stack">
+              <div class="hotel-name">{{ hotel.name }}</div>
+              <div class="hotel-slug">{{ hotel.slug }}</div>
+            </div>
+            <img class="server-icon-large" [src]="getServerIcon(hotel)" [alt]="getServerLabel(hotel)" />
           </div>
-          <div class="votes">{{ hotel.totalVotes || 0 }} votes</div>
+          <div class="hotel-meta">
+            <div class="hotel-stats">
+              <span class="stat-line">
+                <span class="material-icon">how_to_vote</span>{{ hotel.totalVotes || 0 }} Total votes
+              </span>
+              <span class="stat-line">
+                <span class="material-icon">visibility</span>{{ hotel.views || 0 }} Total views
+              </span>
+            </div>
+            <span class="ago-badge">{{ getRelativeTime(hotel.createdAt) }}</span>
+          </div>
         </div>
         <p *ngIf="!hotels.length" class="empty">No servers yet.</p>
         <p *ngIf="error" class="empty error">{{ error }}</p>
@@ -44,26 +57,24 @@
     </aside>
 
     <div class="content">
-      <div class="panel charts" *ngIf="activeTab === 'dashboard'">
+      <div class="panel" *ngIf="activeTab === 'dashboard'">
         <div class="panel-header">
           <div>
             <p class="eyebrow">Overview</p>
-            <h2><span class="material-icon">monitoring</span> Performance (last 31 days)</h2>
-            <p class="hint">Sampled data until live stats are wired.</p>
+            <h2><span class="material-icon">monitoring</span> Performance (last 28 days + 3d forecast)</h2>
+            <p class="hint">Live trend for the selected server with a short horizon forecast.</p>
           </div>
         </div>
         <div class="chart-grid" [class.dimmed]="!selectedHotel">
           <div class="chart-card">
             <div class="chart-title"><span class="material-icon">trending_up</span> Votes</div>
-            <div #votesChart></div>
+            <p class="chart-desc">Daily vote trend and 3-day forecast.</p>
+            <div #votesChart class="chart-host"></div>
           </div>
           <div class="chart-card">
-            <div class="chart-title"><span class="material-icon">bar_chart</span> Listing views</div>
-            <div #viewsChart></div>
-          </div>
-          <div class="chart-card full">
-            <div class="chart-title"><span class="material-icon">pie_chart</span> Rewards mix</div>
-            <div #rewardsChart></div>
+            <div class="chart-title"><span class="material-icon">bar_chart</span> Server views</div>
+            <p class="chart-desc">Views over the last 28 days with a short forecast.</p>
+            <div #viewsChart class="chart-host"></div>
           </div>
           <div class="no-data" *ngIf="!selectedHotel">Select a server to view charts.</div>
         </div>
@@ -78,17 +89,32 @@
           </div>
         </div>
         <div *ngIf="pool === 'pick'" class="pool-grid">
-          <button type="button" class="pool-card" (click)="selectPool('habbo')">
-            <div class="pool-title"><span class="material-icon">apartment</span> Habbo Hotel</div>
-            <p>Create or manage retro hotel listings.</p>
+          <button type="button" class="pool-card habbo" (click)="selectPool('habbo')">
+            <div class="pool-text">
+              <div class="pool-title"><span class="material-icon">apartment</span> Habbo Hotel</div>
+              <p>Create or manage retro hotel listings.</p>
+            </div>
+            <div class="pool-logo">
+              <img src="/game-icons/habbo-icon.png" alt="Habbo Hotel logo" />
+            </div>
           </button>
-          <button type="button" class="pool-card" (click)="selectPool('runescape')">
-            <div class="pool-title"><span class="material-icon">swords</span> RuneScape</div>
-            <p>Coming soon. Callbacks and rewards in progress.</p>
+          <button type="button" class="pool-card runescape" (click)="selectPool('runescape')">
+            <div class="pool-text">
+              <div class="pool-title"><span class="material-icon">swords</span> RuneScape</div>
+              <p>Coming soon. Callbacks and rewards in progress.</p>
+            </div>
+            <div class="pool-logo">
+              <img src="/game-icons/runescape-icon.png" alt="RuneScape logo" />
+            </div>
           </button>
-          <button type="button" class="pool-card" (click)="selectPool('minecraft')">
-            <div class="pool-title"><span class="material-icon">gavel</span> Minecraft</div>
-            <p>Coming soon. Votes and server pings in progress.</p>
+          <button type="button" class="pool-card minecraft" (click)="selectPool('minecraft')">
+            <div class="pool-text">
+              <div class="pool-title"><span class="material-icon">gavel</span> Minecraft</div>
+              <p>Coming soon. Votes and server pings in progress.</p>
+            </div>
+            <div class="pool-logo">
+              <img src="/game-icons/minecraft-icon.png" alt="Minecraft logo" />
+            </div>
           </button>
         </div>
 
@@ -116,7 +142,7 @@
         <div class="panel-header">
           <div>
             <p class="eyebrow">My servers</p>
-            <h2>Hotels you own</h2>
+            <h2>Servers you own</h2>
             <p class="hint">Quick overview of your servers.</p>
           </div>
         </div>
@@ -132,8 +158,14 @@
                 <div class="hotel-name">{{ hotel.name }}</div>
                 <div class="hotel-slug">{{ hotel.slug }}</div>
               </div>
-              <span class="votes">{{ hotel.totalVotes || 0 }} votes</span>
-            </div>
+              <span class="votes with-icon">
+              <span class="server-type-pill" [ngClass]="getServerTypeClass(hotel)">
+                <img class="server-icon" [src]="getServerIcon(hotel)" [alt]="getServerLabel(hotel)" />
+                <span>{{ getServerLabel(hotel) }}</span>
+              </span>
+              <span>{{ hotel.totalVotes || 0 }} Total votes</span>
+            </span>
+          </div>
 
             <div class="details">
               <div class="detail-line">
@@ -154,51 +186,25 @@
                 <span class="badge diamond">Diamonds {{ hotel.rewards?.diamonds || 0 }}</span>
                 <span class="badge duckets">Duckets {{ hotel.rewards?.duckets || 0 }}</span>
               </div>
-              <div class="meta">
-                <span><span class="material-icon">visibility</span>{{ hotel.views || 0 }} views</span>
-                <span><span class="material-icon">event</span>{{ hotel.createdAt | date:'medium' }}</span>
-              </div>
             </div>
 
-            <div *ngIf="editingId !== (hotel._id || hotel.id); else editForm" class="card-actions">
-              <button type="button" class="pill ghost" (click)="startEdit(hotel)">Edit</button>
-              <button type="button" class="pill danger" (click)="deleteHotel(hotel)">Delete</button>
-              <button type="button" class="pill" (click)="selectHotel(hotel); setTab('dashboard')">View</button>
+            <div class="card-actions">
+              <div class="card-meta-inline">
+                <span class="chip"><span class="material-icon">visibility</span>{{ hotel.views || 0 }} Total views</span>
+                <span class="chip"><span class="material-icon">event</span>{{ hotel.createdAt | date:'medium' }}</span>
+                <span class="chip accent">{{ getRelativeTime(hotel.createdAt) }}</span>
+              </div>
+              <div class="card-actions-buttons">
+                <button type="button" class="pill danger" (click)="confirmDeleteHotel(hotel)">
+                  <mat-icon fontIcon="delete"></mat-icon>
+                  Delete
+                </button>
+                <button type="button" class="pill" (click)="selectHotel(hotel); setTab('dashboard')">
+                  <mat-icon fontIcon="visibility"></mat-icon>
+                  View
+                </button>
+              </div>
             </div>
-
-            <ng-template #editForm>
-              <div class="edit-grid">
-                <label>
-                  Name
-                  <input [(ngModel)]="editingModel.name" />
-                </label>
-                <label>
-                  Slug
-                  <input [(ngModel)]="editingModel.slug" />
-                </label>
-                <label>
-                  Description
-                  <textarea rows="2" [(ngModel)]="editingModel.description"></textarea>
-                </label>
-                <label>
-                  Banner URL
-                  <input [(ngModel)]="editingModel.bannerUrl" />
-                </label>
-                <label>
-                  Callback URL
-                  <input [(ngModel)]="editingModel.callbackUrl" />
-                </label>
-                <div class="reward-row">
-                  <label>Credits <input type="number" [(ngModel)]="editingModel.rewards.credits" /></label>
-                  <label>Diamonds <input type="number" [(ngModel)]="editingModel.rewards.diamonds" /></label>
-                  <label>Duckets <input type="number" [(ngModel)]="editingModel.rewards.duckets" /></label>
-                </div>
-              </div>
-              <div class="card-actions">
-                <button type="button" class="pill primary" (click)="saveEdit(hotel)">Save</button>
-                <button type="button" class="pill ghost" (click)="cancelEdit()">Cancel</button>
-              </div>
-            </ng-template>
           </div>
         </div>
         <p *ngIf="!hotels.length && !loading" class="empty">No servers yet.</p>
@@ -238,6 +244,15 @@
 
           <form class="settings-card" (ngSubmit)="updatePassword()">
             <h3><span class="material-icon">lock</span> Password</h3>
+            <input
+              class="sr-only"
+              type="text"
+              name="username"
+              autocomplete="username"
+              [value]="profile.username"
+              tabindex="-1"
+              aria-hidden="true"
+            />
             <mat-form-field appearance="fill">
               <mat-label>Current password</mat-label>
               <input
@@ -289,6 +304,17 @@
       </div>
     </div>
   </div>
+
+  <app-confirm-dialog
+    *ngIf="showDeleteServerDialog && deleteTarget"
+    [title]="'Delete ' + (deleteTarget?.name || 'server') + '?'"
+    description="This will remove the server and its stats. This cannot be undone."
+    confirmLabel="{{ deleteLoading ? 'Deleting…' : 'Delete server' }}"
+    cancelLabel="Cancel"
+    [loading]="deleteLoading"
+    (confirm)="!deleteLoading && deleteHotel(deleteTarget)"
+    (cancel)="cancelDeleteHotel()"
+  ></app-confirm-dialog>
 
   <app-confirm-dialog
     *ngIf="showDeleteDialog"

@@ -16,8 +16,10 @@ async function createHotel(req, res, next) {
       return next(err);
     }
 
+    const ownerId = req.user.id || req.user._id;
+
     const hotel = await HabboServer.create({
-      ownerId: req.user.id,
+      ownerId,
       name,
       slug: slug.toLowerCase(),
       description,
@@ -81,7 +83,8 @@ async function updateHotel(req, res, next) {
       return next(err);
     }
 
-    if (hotel.ownerId.toString() !== req.user.id && req.user.role !== 'admin') {
+    const requesterId = req.user.id || req.user._id?.toString();
+    if (hotel.ownerId.toString() !== requesterId && req.user.role !== 'admin') {
       const err = new Error('Forbidden');
       err.status = 403;
       return next(err);
@@ -136,7 +139,8 @@ async function deleteHotel(req, res, next) {
       return next(err);
     }
 
-    if (hotel.ownerId.toString() !== req.user.id && req.user.role !== 'admin') {
+    const requesterId = req.user.id || req.user._id?.toString();
+    if (hotel.ownerId.toString() !== requesterId && req.user.role !== 'admin') {
       const err = new Error('Forbidden');
       err.status = 403;
       return next(err);

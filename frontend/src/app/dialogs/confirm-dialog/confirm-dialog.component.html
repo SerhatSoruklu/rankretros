@@ -6,8 +6,8 @@
       <button type="button" class="pill ghost" (click)="cancel.emit()">
         <span class="material-icon">close</span>{{ cancelLabel }}
       </button>
-      <button type="button" class="pill danger" (click)="confirm.emit()">
-        <span class="material-icon">warning</span>{{ confirmLabel }}
+      <button type="button" class="pill danger" [class.loading]="loading" [disabled]="loading" (click)="confirm.emit()">
+        <span class="material-icon">{{ loading ? 'hourglass_top' : 'warning' }}</span>{{ confirmLabel }}
       </button>
     </div>
   </div>

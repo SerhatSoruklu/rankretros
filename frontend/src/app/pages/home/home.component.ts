@@ -115,8 +115,8 @@ export class HomeComponent implements OnInit {
         this.selectPool('habbo'); // ensure default pool shows data immediately
         this.totalVotes = this.hotels.reduce((sum, h) => sum + (h.totalVotes || 0), 0);
         this.chartSeries = this.buildChartSeries(this.totalVotes);
-        this.cdr.detectChanges();
         this.loading = false;
+        setTimeout(() => this.cdr.detectChanges(), 0);
       },
       error: (err) => {
         this.error = err?.error?.message || 'Failed to load servers.';
