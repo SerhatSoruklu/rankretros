@@ -41,7 +41,7 @@
   font-weight: 700;
   text-decoration: none;
   display: inline-flex;
-  align-items: center;
+  justify-content: center;
   gap: 0.4rem;
   box-shadow: 0 8px 22px rgba(142, 162, 255, 0.3);
   line-height: 1;
@@ -54,16 +54,16 @@
   width: 20px;
   height: 20px;
   line-height: 1;
+  vertical-align: middle;
 }
 
 .ghost-btn {
-  border: 1px solid #2a3353;
   color: #d6defc;
   padding: 0.85rem 1.15rem;
   border-radius: 10px;
   text-decoration: none;
   display: inline-flex;
-  align-items: center;
+  justify-content: center;
   gap: 0.35rem;
   background: rgba(20, 28, 51, 0.6);
   line-height: 1;
@@ -193,7 +193,6 @@
 }
 
 :host-context(.theme-light) .hero-chip {
-  background: rgba(82, 105, 198, 0.18);
   border-color: rgba(82, 105, 198, 0.35);
   color: #2b3550;
 }

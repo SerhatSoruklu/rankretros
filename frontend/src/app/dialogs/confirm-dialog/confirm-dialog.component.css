@@ -79,3 +79,44 @@
   margin: 0;
   color: #c8d2f0;
 }
+
+/* Light theme overrides */
+:host-context(.theme-light) .backdrop {
+  background: rgba(15, 26, 45, 0.5);
+}
+
+:host-context(.theme-light) .dialog {
+  background: #ffffff;
+  border-color: #d5deeb;
+  color: #0f1a2d;
+  box-shadow: 0 20px 60px rgba(0, 0, 0, 0.15);
+}
+
+:host-context(.theme-light) .dialog h3 {
+  color: #0f1a2d;
+}
+
+:host-context(.theme-light) .dialog p {
+  color: #54657d;
+}
+
+:host-context(.theme-light) .actions .pill {
+  background: #f7f8fb;
+  border-color: #d5deeb;
+  color: #0f1a2d;
+}
+
+:host-context(.theme-light) .actions .pill:hover {
+  border-color: #5269c6;
+  box-shadow: 0 6px 18px rgba(0, 0, 0, 0.1);
+}
+
+:host-context(.theme-light) .actions .pill.danger {
+  border-color: #ff6b6b;
+  background: rgba(255, 107, 107, 0.1);
+  color: #c62828;
+}
+
+:host-context(.theme-light) .actions .pill.danger:hover {
+  box-shadow: 0 6px 18px rgba(255, 107, 107, 0.2);
+}

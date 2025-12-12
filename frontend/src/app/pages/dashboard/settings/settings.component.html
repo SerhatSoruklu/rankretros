@@ -25,8 +25,14 @@
         <mat-icon>save</mat-icon>
         Save profile
       </button>
-      <div *ngIf="profileMessage" class="alert success">{{ profileMessage }}</div>
-      <div *ngIf="profileError" class="alert error">{{ profileError }}</div>
+      <div *ngIf="profileMessage" class="alert success">
+        <mat-icon>check_circle</mat-icon>
+        {{ profileMessage }}
+      </div>
+      <div *ngIf="profileError" class="alert error">
+        <mat-icon>error</mat-icon>
+        {{ profileError }}
+      </div>
     </form>
 
     <form class="settings-card password-card" (ngSubmit)="onUpdatePassword()">
@@ -78,14 +84,20 @@
         <mat-icon>vpn_key</mat-icon>
         {{ passwordLoading ? 'Updating…' : 'Update password' }}
       </button>
-      <div *ngIf="passwordMessage" class="alert success">{{ passwordMessage }}</div>
-      <div *ngIf="passwordError" class="alert error">{{ passwordError }}</div>
+      <div *ngIf="passwordMessage" class="alert success">
+        <mat-icon>check_circle</mat-icon>
+        {{ passwordMessage }}
+      </div>
+      <div *ngIf="passwordError" class="alert error">
+        <mat-icon>error</mat-icon>
+        {{ passwordError }}
+      </div>
     </form>
 
     <div class="settings-card danger-card">
       <h3><span class="material-icon">warning</span> Delete account</h3>
       <p class="hint">This will delete your account and all your listings/servers.</p>
-      <button class="pill danger" type="button" (click)="onConfirmDeleteAccount()">Delete account</button>
+      <button class="pill danger delete-btn" type="button" (click)="onConfirmDeleteAccount()">DELETE ACCOUNT</button>
     </div>
   </div>
 </div>

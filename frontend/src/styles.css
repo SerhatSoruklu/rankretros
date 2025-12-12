@@ -54,23 +54,6 @@ body {
   background: #0f162b;
 }
 
-:root.theme-light .panel,
-:root.theme-light .card,
-:root.theme-light .server-card,
-:root.theme-light .coming-card,
-:root.theme-light .coming-soon,
-:root.theme-light .app-header,
-:root.theme-light .dashboard,
-:root.theme-light .layout,
-:root.theme-light .content,
-:root.theme-light .sidebar,
-:root.theme-light .chart-card,
-:root.theme-light .list-header,
-:root.theme-light .tab-bar {
-  color: var(--text-primary) !important;
-  border-color: var(--border) !important;
-}
-
 :root.theme-light .panel .eyebrow,
 :root.theme-light .card .eyebrow,
 :root.theme-light .server-card .eyebrow,
@@ -125,19 +108,6 @@ body {
   color: #5269c6 !important;
   box-shadow: 0 0 0 1px var(--border) !important;
 }
-:root.theme-light .panel,
-:root.theme-light .card,
-:root.theme-light .server-card,
-:root.theme-light .coming-card,
-:root.theme-light .coming-soon,
-:root.theme-light .app-header,
-:root.theme-light .dashboard,
-:root.theme-light .layout,
-:root.theme-light .content,
-:root.theme-light .sidebar {
-  color: var(--text-primary) !important;
-  border-color: var(--border) !important;
-}
 
 :root.theme-light .panel .eyebrow,
 :root.theme-light .card .eyebrow,
@@ -166,6 +136,48 @@ body {
 
 :root.theme-light .primary-btn {
   color: var(--btn-primary-text);
+}
+
+/* Auth Pages - Error icons always red */
+.auth-card mat-error mat-icon {
+  color: #ff6b6b !important;
+}
+
+/* Auth Pages Light Theme */
+:root.theme-light .auth-card {
+  background: #ffffff !important;
+  border-color: #d5deeb !important;
+  color: #0f1a2d !important;
+  box-shadow: 0 8px 32px rgba(0, 0, 0, 0.08) !important;
+}
+
+:root.theme-light .auth-card h1 {
+  color: #0f1a2d !important;
+}
+
+:root.theme-light .auth-card .eyebrow {
+  color: #5269c6 !important;
+}
+
+:root.theme-light .auth-card .hint {
+  color: #54657d !important;
+}
+
+:root.theme-light .auth-card .header-icon {
+  color: #5269c6 !important;
+}
+
+:root.theme-light .auth-card .error-message {
+  color: #c62828 !important;
+  background: rgba(198, 40, 40, 0.08) !important;
+}
+
+:root.theme-light .auth-card .auth-footer a {
+  color: #5269c6 !important;
+}
+
+:root.theme-light .auth-card .auth-footer a:hover {
+  color: #6b7ece !important;
 }
 
 .material-icon {

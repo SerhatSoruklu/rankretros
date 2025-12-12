@@ -1,11 +1,13 @@
 import { CommonModule } from '@angular/common';
 import { ChangeDetectorRef, Component, EventEmitter, Input, OnDestroy, OnInit, Output } from '@angular/core';
 import { FormsModule } from '@angular/forms';
+import { COMMA, ENTER } from '@angular/cdk/keycodes';
 import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatInputModule } from '@angular/material/input';
 import { MatButtonModule } from '@angular/material/button';
 import { MatIconModule } from '@angular/material/icon';
 import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
+import { MatChipsModule, MatChipInput, MatChipInputEvent } from '@angular/material/chips';
 import { ApiService } from '../../../services/api.service';
 
 @Component({
@@ -18,7 +20,8 @@ import { ApiService } from '../../../services/api.service';
     MatInputModule,
     MatButtonModule,
     MatIconModule,
-    MatProgressSpinnerModule
+    MatProgressSpinnerModule,
+    MatChipsModule
   ],
   templateUrl: './my-servers.component.html',
   styleUrl: './my-servers.component.css'
@@ -45,6 +48,11 @@ export class MyServersComponent implements OnInit, OnDestroy {
   editingBannerInfo = '';
   editingBannerError = '';
   uploadingBanner = false;
+  readonly maxTags = 8;
+  readonly maxTagLength = 12;
+  readonly separatorKeysCodes: number[] = [ENTER, COMMA];
+  editingTags: string[] = [];
+  currentEditingTag = '';
 
   constructor(
     private readonly cdr: ChangeDetectorRef,
@@ -70,6 +78,7 @@ export class MyServersComponent implements OnInit, OnDestroy {
     this.editingBannerPreview = hotel.bannerUrl || '';
     this.editingBannerInfo = this.bannerMeta[hotel._id || hotel.id] || '';
     this.editingBannerError = '';
+    this.editingTags = Array.isArray(hotel.tags) ? [...hotel.tags] : [];
     this.startEdit.emit(hotel);
   }
 
@@ -81,6 +90,8 @@ export class MyServersComponent implements OnInit, OnDestroy {
     this.editingBannerPreview = '';
     this.editingBannerInfo = '';
     this.editingBannerError = '';
+    this.editingTags = [];
+    this.currentEditingTag = '';
     this.cancelEdit.emit();
   }
 
@@ -95,6 +106,7 @@ export class MyServersComponent implements OnInit, OnDestroy {
       return;
     }
 
+    this.editingModel.tags = this.editingTags;
     const previousBanner = hotel.bannerUrl || '';
 
     if (this.editingBannerFile) {
@@ -233,6 +245,43 @@ export class MyServersComponent implements OnInit, OnDestroy {
     this.editingBannerPreview = '';
     this.editingBannerInfo = '';
     this.editingModel.bannerUrl = '';
+  }
+
+  addEditingTag(event: MatChipInputEvent): void {
+    const value = (event.value || '').trim();
+
+    if (!value) {
+      this.clearEditingTagInput(event.chipInput);
+      return;
+    }
+
+    if (value.length > this.maxTagLength) {
+      this.clearEditingTagInput(event.chipInput);
+      return;
+    }
+
+    if (this.editingTags.length >= this.maxTags) {
+      this.clearEditingTagInput(event.chipInput);
+      return;
+    }
+
+    if (!this.editingTags.includes(value)) {
+      this.editingTags.push(value);
+    }
+
+    this.clearEditingTagInput(event.chipInput);
+  }
+
+  removeEditingTag(tag: string): void {
+    const index = this.editingTags.indexOf(tag);
+    if (index >= 0) {
+      this.editingTags.splice(index, 1);
+    }
+  }
+
+  private clearEditingTagInput(chipInput?: MatChipInput | null) {
+    chipInput?.clear();
+    this.currentEditingTag = '';
   }
 
   private inspectImage(file: File): Promise<string> {

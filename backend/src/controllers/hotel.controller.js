@@ -9,7 +9,7 @@ async function createHotel(req, res, next) {
       return next(err);
     }
 
-    const { name, slug, description, bannerUrl, callbackUrl, rewards = {} } = req.body;
+    const { name, slug, description, bannerUrl, callbackUrl, rewards = {}, tags = [] } = req.body;
     if (!name || !slug || !callbackUrl || !bannerUrl || !description) {
       const err = new Error('name, slug, description, callbackUrl, and bannerUrl are required');
       err.status = 400;
@@ -29,7 +29,8 @@ async function createHotel(req, res, next) {
         credits: Number(rewards.credits) || 0,
         diamonds: Number(rewards.diamonds) || 0,
         duckets: Number(rewards.duckets) || 0
-      }
+      },
+      tags: Array.isArray(tags) ? tags.slice(0, 8).map(t => String(t).trim()) : []
     });
 
     res.status(201).json(hotel);
@@ -91,7 +92,7 @@ async function updateHotel(req, res, next) {
     }
 
     const updates = {};
-    const allowed = ['name', 'slug', 'description', 'bannerUrl', 'callbackUrl', 'rewards', 'views'];
+    const allowed = ['name', 'slug', 'description', 'bannerUrl', 'callbackUrl', 'rewards', 'views', 'tags'];
     for (const key of allowed) {
       if (req.body[key] !== undefined) {
         updates[key] = req.body[key];
@@ -120,6 +121,10 @@ async function updateHotel(req, res, next) {
 
     if (updates.description) {
       updates.description = updates.description.toString().trim();
+    }
+
+    if (updates.tags !== undefined) {
+      updates.tags = Array.isArray(updates.tags) ? updates.tags.slice(0, 8).map(t => String(t).trim()) : [];
     }
 
     Object.assign(hotel, updates);

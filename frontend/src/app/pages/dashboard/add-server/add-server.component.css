@@ -155,7 +155,19 @@
   color: #6b7b8f;
 }
 
+:host-context(.theme-light) .pill.ghost {
+  background: #f7f8fb;
+  color: #2b3550;
+  border-color: #d5deeb;
+}
+
 :host-context(.theme-light) .pool-header .pill {
+  background: #f7f8fb;
+  color: #2b3550;
+  border-color: #d5deeb;
+}
+
+:host-context(.theme-light) .coming-soon .pill {
   background: #f7f8fb;
   color: #2b3550;
   border-color: #d5deeb;
@@ -227,7 +239,6 @@
 }
 
 .pill:hover {
-  border-color: #2a3353;
   box-shadow: 0 4px 14px rgba(0, 0, 0, 0.2);
 }
 

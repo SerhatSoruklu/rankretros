@@ -38,7 +38,8 @@ async function register(req, res, next) {
       $or: [{ email: email.toLowerCase() }, { username }]
     });
     if (existing) {
-      const err = new Error('User already exists');
+      const field = existing.email === email.toLowerCase() ? 'email' : 'username';
+      const err = new Error(`A user with that ${field} already exists`);
       err.status = 409;
       return next(err);
     }

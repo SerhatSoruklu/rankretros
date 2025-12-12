@@ -1,68 +1,132 @@
+.auth-container {
+  min-height: 100vh;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
 .auth-card {
   max-width: 480px;
-  margin: 0 auto;
+  width: 100%;
   background: #0f162b;
   border: 1px solid #1f2844;
-  border-radius: 12px;
-  padding: 1.5rem;
+  border-radius: 16px;
+  padding: 2.5rem;
   color: #f7f9ff;
+  box-shadow: 0 8px 32px rgba(0, 0, 0, 0.3);
+}
+
+.auth-header {
+  margin-bottom: 2rem;
+  text-align: center;
 }
 
 .eyebrow {
   text-transform: uppercase;
   letter-spacing: 0.08em;
-  font-size: 0.8rem;
+  font-size: 0.75rem;
   color: #8ea2ff;
-  margin: 0 0 0.35rem;
+  margin: 0 0 0.5rem;
+  font-weight: 600;
 }
 
 h1 {
-  margin: 0 0 0.35rem;
+  margin: 0 0 0.75rem;
+  font-size: 1.75rem;
+  color: #f7f9ff;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.5rem;
+}
+
+.header-icon {
+  font-size: 2.5rem;
+  width: 2.5rem;
+  height: 2.5rem;
+  color: #8ea2ff;
 }
 
 .hint {
   color: #8ea2ff;
-  margin: 0.25rem 0 1rem;
+  margin: 0;
+  font-size: 0.9rem;
 }
 
 form {
   display: flex;
   flex-direction: column;
-  gap: 0.9rem;
+  gap: 1.25rem;
 }
 
-label {
-  display: flex;
-  flex-direction: column;
-  gap: 0.35rem;
+mat-form-field {
+  width: 100%;
+}
+
+mat-form-field mat-icon {
+  color: #5a6b8f;
+}
+
+mat-error {
+  display: flex !important;
+  align-items: center !important;
+  gap: 0.35rem !important;
+}
+
+mat-error mat-icon {
+  color: #ff6b6b !important;
+  font-size: 16px !important;
+  width: 16px !important;
+  height: 16px !important;
+}
+
+.submit-btn {
+  margin-top: 0.5rem;
+  padding: 0.75rem 1.5rem;
+  font-size: 1rem;
   font-weight: 600;
-  color: #c8d2f0;
+  height: 48px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.5rem;
 }
 
-input {
-  padding: 0.75rem;
-  border-radius: 10px;
-  border: 1px solid #1f2844;
-  background: #0c1224;
-  color: #f7f9ff;
-}
-
-button {
-  padding: 0.85rem;
-  border-radius: 10px;
-  border: none;
-  background: #8ea2ff;
-  color: #0c1224;
-  font-weight: 700;
-  cursor: pointer;
-}
-
-button:disabled {
-  opacity: 0.6;
-  cursor: not-allowed;
-}
-
-.error {
-  color: #ffb4b4;
+.error-message {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  color: #ff6b6b;
+  background: rgba(255, 107, 107, 0.1);
+  padding: 0.75rem 1rem;
+  border-radius: 8px;
   margin: 0;
+  font-size: 0.9rem;
+}
+
+.error-message mat-icon {
+  font-size: 1.25rem;
+  width: 1.25rem;
+  height: 1.25rem;
+}
+
+.auth-footer {
+  margin-top: 1rem;
+  text-align: center;
+}
+
+.auth-footer .hint {
+  font-size: 0.9rem;
+}
+
+.auth-footer a {
+  color: #8ea2ff;
+  text-decoration: none;
+  font-weight: 600;
+  transition: color 0.2s;
+}
+
+.auth-footer a:hover {
+  color: #b4c5ff;
+  text-decoration: underline;
 }

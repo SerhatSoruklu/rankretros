@@ -224,6 +224,104 @@ mat-error .mat-icon {
   background: rgba(15, 26, 45, 0.12);
 }
 
+.tags-field {
+  border: 1px dashed #1f2844;
+  border-radius: 10px;
+  padding: 0.75rem;
+  background: rgba(255, 255, 255, 0.02);
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+}
+
+:host-context(.theme-light) .rewards {
+  background: #f7f8fb;
+  border-color: #d5deeb;
+}
+
+.tags-header {
+  display: flex;
+  align-items: baseline;
+  gap: 0.5rem;
+  justify-content: space-between;
+}
+
+.tags-label {
+  margin: 0;
+  font-weight: 700;
+  color: #f7f9ff;
+}
+
+.tags-hint {
+  font-size: 0.9rem;
+}
+
+.tags-input {
+  width: 100%;
+}
+
+.tags-input mat-chip-grid {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.5rem;
+  margin: 0.5rem 0;
+}
+
+.tags-input mat-chip-row {
+  color: #f7f9ff;
+  padding: 0.4rem 0.75rem;
+  border-radius: 8px;
+  font-weight: 600;
+}
+
+.tags-input mat-chip-row button[matChipRemove] {
+  opacity: 0.8;
+}
+
+.tags-input mat-chip-row button[matChipRemove]:hover {
+  opacity: 1;
+}
+
+:host-context(.theme-light) .tags-field {
+  background: #f7f8fb;
+  border-color: #d5deeb;
+}
+
+.tags-tip {
+  display: grid;
+  grid-template-columns: auto 1fr;
+  align-items: center;
+  gap: 0.5rem;
+  padding: 0.75rem 0.9rem;
+  border-radius: 10px;
+  background: #e0edff;
+  color: #0f172a;
+}
+
+.tags-tip mat-icon {
+  color: #2563eb;
+}
+
+.tags-tip .tip-title {
+  font-weight: 700;
+  margin: 0;
+  font-size: 0.95rem;
+}
+
+.tags-tip .tip-copy {
+  margin: 0.15rem 0 0;
+  color: #334155;
+  font-size: 0.9rem;
+}
+
+:host-context(.theme-light) .tags-label {
+  color: #2b3550;
+}
+
+:host-context(.theme-light) .tags-hint {
+  color: #6b7b8f;
+}
+
 .settings-btn {
   width: 100%;
   gap: 0.35rem;

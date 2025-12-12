@@ -1,12 +1,14 @@
 import { CommonModule } from '@angular/common';
 import { Component, EventEmitter, Output } from '@angular/core';
-import { FormBuilder, ReactiveFormsModule, Validators, FormControl, FormGroup } from '@angular/forms';
+import { FormBuilder, ReactiveFormsModule, FormsModule, Validators, FormControl, FormGroup } from '@angular/forms';
+import { COMMA, ENTER } from '@angular/cdk/keycodes';
 import { ApiService } from '../../services/api.service';
 import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatInputModule } from '@angular/material/input';
 import { MatButtonModule } from '@angular/material/button';
 import { MatIconModule } from '@angular/material/icon';
 import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
+import { MatChipsModule, MatChipInput, MatChipInputEvent } from '@angular/material/chips';
 
 @Component({
   selector: 'app-habbo-server',
@@ -14,11 +16,13 @@ import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
   imports: [
     CommonModule,
     ReactiveFormsModule,
+    FormsModule,
     MatFormFieldModule,
     MatInputModule,
     MatButtonModule,
     MatIconModule,
-    MatProgressSpinnerModule
+    MatProgressSpinnerModule,
+    MatChipsModule
   ],
   templateUrl: './habbo-server.component.html',
   styleUrls: ['./habbo-server.component.css']
@@ -35,6 +39,11 @@ export class HabboServerComponent {
   pendingBannerFile: File | null = null;
   pendingBannerPreview = '';
   lastUploadedBannerUrl = '';
+  readonly maxTags = 8;
+  readonly maxTagLength = 12;
+  readonly separatorKeysCodes: number[] = [ENTER, COMMA];
+  tags: string[] = [];
+  currentTag = '';
   form: FormGroup<{
     name: FormControl<string>;
     slug: FormControl<string>;
@@ -46,6 +55,7 @@ export class HabboServerComponent {
       diamonds: FormControl<number>;
       duckets: FormControl<number>;
     }>;
+    tags: FormControl<string[]>;
   }>;
 
   constructor(
@@ -62,7 +72,8 @@ export class HabboServerComponent {
         credits: this.fb.nonNullable.control(0),
         diamonds: this.fb.nonNullable.control(0),
         duckets: this.fb.nonNullable.control(0)
-      })
+      }),
+      tags: this.fb.nonNullable.control<string[]>([])
     });
     this.updateBannerLabel();
   }
@@ -208,6 +219,47 @@ export class HabboServerComponent {
   hasError(controlName: 'name' | 'slug' | 'bannerUrl' | 'callbackUrl' | 'description'): boolean {
     const control = this.form.get(controlName);
     return !!control && control.invalid && (control.dirty || control.touched);
+  }
+
+  addTag(event: MatChipInputEvent): void {
+    const value = (event.value || '').trim();
+
+    if (!value) {
+      this.clearTagInput(event.chipInput);
+      return;
+    }
+
+    if (value.length > this.maxTagLength) {
+      this.clearTagInput(event.chipInput);
+      return;
+    }
+
+    if (this.tags.length >= this.maxTags) {
+      this.clearTagInput(event.chipInput);
+      return;
+    }
+
+    if (!this.tags.includes(value)) {
+      this.tags.push(value);
+      this.form.controls.tags.setValue(this.tags);
+      this.form.controls.tags.markAsDirty();
+    }
+
+    this.clearTagInput(event.chipInput);
+  }
+
+  removeTag(tag: string): void {
+    const index = this.tags.indexOf(tag);
+    if (index >= 0) {
+      this.tags.splice(index, 1);
+      this.form.controls.tags.setValue(this.tags);
+      this.form.controls.tags.markAsDirty();
+    }
+  }
+
+  private clearTagInput(chipInput?: MatChipInput | null) {
+    chipInput?.clear();
+    this.currentTag = '';
   }
 
   private inspectImage(file: File): Promise<string> {

@@ -40,12 +40,23 @@
           <span class="value">{{ bannerMeta[hotel._id || hotel.id] }}</span>
         </div>
         <div class="detail-line">
+          <span class="label">Callback URL</span>
+          <span class="value">{{ hotel.callbackUrl || '—' }}</span>
+        </div>
+        <div class="detail-line">
           <span class="label">Description</span>
           <span class="value">{{ hotel.description || '—' }}</span>
         </div>
-        <div class="detail-line">
-          <span class="label">Callback URL</span>
-          <span class="value">{{ hotel.callbackUrl || '—' }}</span>
+        <div class="detail-line tags-line">
+          <span class="label">Tags</span>
+          <div class="tags-display">
+            <mat-chip-set *ngIf="hotel.tags && hotel.tags.length > 0">
+              <mat-chip *ngFor="let tag of hotel.tags">{{ tag }}</mat-chip>
+            </mat-chip-set>
+            <span class="no-tags" *ngIf="!hotel.tags || hotel.tags.length === 0">
+              <mat-chip>NO TAGS</mat-chip>
+            </span>
+          </div>
         </div>
         <div class="detail-line rewards">
           <span class="label">Rewards</span>
@@ -84,21 +95,6 @@
           <mat-error *ngIf="slugModel.invalid && slugModel.touched">
             <mat-icon fontIcon="error" aria-hidden="true"></mat-icon>
             Slug is required.
-          </mat-error>
-        </mat-form-field>
-        <mat-form-field appearance="fill">
-          <mat-label>Description</mat-label>
-          <textarea
-            matInput
-            [(ngModel)]="editingModel.description"
-            name="description"
-            rows="3"
-            required
-            #descriptionModel="ngModel"
-          ></textarea>
-          <mat-error *ngIf="descriptionModel.invalid && descriptionModel.touched">
-            <mat-icon fontIcon="error" aria-hidden="true"></mat-icon>
-            Description is required.
           </mat-error>
         </mat-form-field>
         <div class="upload-field">
@@ -140,7 +136,53 @@
             Callback URL is required.
           </mat-error>
         </mat-form-field>
+        <mat-form-field appearance="fill">
+          <mat-label>Description</mat-label>
+          <textarea
+            matInput
+            [(ngModel)]="editingModel.description"
+            name="description"
+            rows="3"
+            required
+            #descriptionModel="ngModel"
+          ></textarea>
+          <mat-error *ngIf="descriptionModel.invalid && descriptionModel.touched">
+            <mat-icon fontIcon="error" aria-hidden="true"></mat-icon>
+            Description is required.
+          </mat-error>
+        </mat-form-field>
+        <div class="tags-field">
+          <div class="tags-header">
+            <p class="tags-label">Tags (optional)</p>
+            <span class="tags-hint">Press Enter to add tags. Max {{ maxTags }} tags, 12 chars each.</span>
+          </div>
+          <mat-form-field appearance="fill" class="tags-input">
+            <mat-label>Add tags</mat-label>
+            <mat-chip-grid #chipGrid aria-label="Tags">
+              <mat-chip-row *ngFor="let tag of editingTags" (removed)="removeEditingTag(tag)">
+                {{ tag }}
+                <button matChipRemove [attr.aria-label]="'Remove ' + tag">
+                  <mat-icon>cancel</mat-icon>
+                </button>
+              </mat-chip-row>
+            </mat-chip-grid>
+            <input
+              placeholder="New tag..."
+              [matChipInputFor]="chipGrid"
+              [matChipInputSeparatorKeyCodes]="separatorKeysCodes"
+              [matChipInputAddOnBlur]="false"
+              [maxlength]="maxTagLength"
+              (matChipInputTokenEnd)="addEditingTag($event)"
+              [(ngModel)]="currentEditingTag"
+              [ngModelOptions]="{standalone: true}"
+            />
+            <mat-hint *ngIf="editingTags.length > 0">{{ editingTags.length }} / {{ maxTags }} tags</mat-hint>
+          </mat-form-field>
+        </div>
         <div class="rewards-edit">
+          <div class="rewards-header">
+            <p class="rewards-title">Rewards per vote</p>
+          </div>
           <mat-form-field appearance="fill">
             <mat-label>Credits</mat-label>
             <input matInput type="number" [(ngModel)]="editingModel.rewards.credits" name="credits" min="0" />

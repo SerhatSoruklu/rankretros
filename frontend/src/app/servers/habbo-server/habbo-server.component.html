@@ -87,6 +87,42 @@
       </mat-form-field>
     </div>
 
+    <div class="tags-field">
+      <div class="tags-header">
+        <p class="tags-label">Tags (optional)</p>
+        <span class="tags-hint">Press Enter to add tags. Max {{ maxTags }} tags, 12 chars each.</span>
+      </div>
+      <mat-form-field appearance="fill" class="tags-input">
+        <mat-label>Add tags</mat-label>
+        <mat-chip-grid #chipGrid aria-label="Tags">
+          <mat-chip-row *ngFor="let tag of tags" (removed)="removeTag(tag)">
+            {{ tag }}
+            <button matChipRemove [attr.aria-label]="'Remove ' + tag">
+              <mat-icon>cancel</mat-icon>
+            </button>
+          </mat-chip-row>
+        </mat-chip-grid>
+        <input
+          placeholder="New tag..."
+          [matChipInputFor]="chipGrid"
+          [matChipInputSeparatorKeyCodes]="separatorKeysCodes"
+          [matChipInputAddOnBlur]="false"
+          [maxlength]="maxTagLength"
+          (matChipInputTokenEnd)="addTag($event)"
+          [(ngModel)]="currentTag"
+          [ngModelOptions]="{standalone: true}"
+        />
+        <mat-hint *ngIf="tags.length > 0">{{ tags.length }} / {{ maxTags }} tags</mat-hint>
+      </mat-form-field>
+      <div class="tags-tip">
+        <mat-icon fontIcon="lightbulb" aria-hidden="true"></mat-icon>
+        <div>
+          <p class="tip-title">Pro tip</p>
+          <p class="tip-copy">Adding relevant tags helps players discover your server faster.</p>
+        </div>
+      </div>
+    </div>
+
     <fieldset formGroupName="rewards" class="rewards">
       <legend>Rewards per vote</legend>
 

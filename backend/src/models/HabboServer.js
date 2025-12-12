@@ -13,6 +13,7 @@ const habboServerSchema = new Schema(
       diamonds: { type: Number, default: 0 },
       duckets: { type: Number, default: 0 }
     },
+    tags: { type: [String], default: [], maxlength: 8 },
     views: { type: Number, default: 0 },
     totalVotes: { type: Number, default: 0 }
   },
