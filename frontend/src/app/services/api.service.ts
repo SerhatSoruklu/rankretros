@@ -17,14 +17,19 @@ export interface AuthResponse {
 export interface HotelPayload {
   name: string;
   slug: string;
-  description?: string;
-  bannerUrl?: string;
+  description: string;
+  bannerUrl: string;
   callbackUrl: string;
   rewards?: {
     credits?: number;
     diamonds?: number;
     duckets?: number;
   };
+}
+
+export interface UploadResponse {
+  key: string;
+  url: string;
 }
 
 @Injectable({
@@ -63,6 +68,18 @@ export class ApiService {
 
   deleteHotel(id: string): Observable<any> {
     return this.http.delete<any>(`${this.baseUrl}/hotels/${id}`);
+  }
+
+  uploadHabboBanner(file: File): Observable<UploadResponse> {
+    const formData = new FormData();
+    formData.append('file', file);
+    return this.http.post<UploadResponse>(`${this.baseUrl}/uploads/habbo/banner`, formData);
+  }
+
+  deleteHabboBanner(keyOrUrl: string): Observable<any> {
+    return this.http.delete<any>(`${this.baseUrl}/uploads/habbo/banner`, {
+      body: { key: keyOrUrl }
+    });
   }
 
   // User settings

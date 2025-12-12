@@ -10,8 +10,8 @@ async function createHotel(req, res, next) {
     }
 
     const { name, slug, description, bannerUrl, callbackUrl, rewards = {} } = req.body;
-    if (!name || !slug || !callbackUrl) {
-      const err = new Error('name, slug, and callbackUrl are required');
+    if (!name || !slug || !callbackUrl || !bannerUrl || !description) {
+      const err = new Error('name, slug, description, callbackUrl, and bannerUrl are required');
       err.status = 400;
       return next(err);
     }
@@ -20,11 +20,11 @@ async function createHotel(req, res, next) {
 
     const hotel = await HabboServer.create({
       ownerId,
-      name,
-      slug: slug.toLowerCase(),
-      description,
-      bannerUrl,
-      callbackUrl,
+      name: name.trim(),
+      slug: slug.trim().toLowerCase(),
+      description: description.trim(),
+      bannerUrl: bannerUrl.trim(),
+      callbackUrl: callbackUrl.trim(),
       rewards: {
         credits: Number(rewards.credits) || 0,
         diamonds: Number(rewards.diamonds) || 0,
@@ -107,7 +107,19 @@ async function updateHotel(req, res, next) {
     }
 
     if (updates.slug) {
-      updates.slug = updates.slug.toLowerCase();
+      updates.slug = updates.slug.toString().trim().toLowerCase();
+    }
+
+    if (updates.bannerUrl) {
+      updates.bannerUrl = updates.bannerUrl.toString().trim();
+    }
+
+    if (updates.callbackUrl) {
+      updates.callbackUrl = updates.callbackUrl.toString().trim();
+    }
+
+    if (updates.description) {
+      updates.description = updates.description.toString().trim();
     }
 
     Object.assign(hotel, updates);

@@ -3,6 +3,7 @@ import { Component } from '@angular/core';
 import { RouterLink, Router } from '@angular/router';
 import { MatIconModule } from '@angular/material/icon';
 import { AuthService } from '../../services/auth.service';
+import { ThemeService } from '../../services/theme.service';
 
 @Component({
   selector: 'app-header',
@@ -14,6 +15,7 @@ import { AuthService } from '../../services/auth.service';
 export class HeaderComponent {
   constructor(
     public readonly auth: AuthService,
+    public readonly theme: ThemeService,
     private readonly router: Router
   ) {}
 
@@ -21,5 +23,9 @@ export class HeaderComponent {
     this.auth.logout();
     // Hard navigation to ensure cookies/state are fully cleared
     window.location.href = '/';
+  }
+
+  toggleTheme() {
+    this.theme.toggle();
   }
 }

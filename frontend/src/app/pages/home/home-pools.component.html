@@ -1,0 +1,92 @@
+<section class="pools">
+  <div class="pool-header">
+    <div>
+      <p class="eyebrow">Ranking pools</p>
+      <h2>Find and play</h2>
+      <p class="hint">Join a ranking pool to find servers by game and community.</p>
+    </div>
+    <div class="pool-buttons">
+      <button class="pool-btn habbo" [class.active]="selectedPool === 'habbo'" (click)="selectPool('habbo')">
+        <span class="material-icon">apartment</span> Habbo Hotel
+      </button>
+      <button class="pool-btn runescape" [class.active]="selectedPool === 'runescape'" (click)="selectPool('runescape')">
+        <span class="material-icon">swords</span> RuneScape
+      </button>
+      <button class="pool-btn minecraft" [class.active]="selectedPool === 'minecraft'" (click)="selectPool('minecraft')">
+        <span class="material-icon">gavel</span> Minecraft
+      </button>
+    </div>
+  </div>
+
+  <div *ngIf="selectedPool === 'habbo'" class="pool-content">
+    <div class="list-header">
+      <h3><span class="material-icon">leaderboard</span> Top Habbo servers</h3>
+      <div class="sort">
+        <span class="sort-label">
+          <span class="material-icon">sort</span>
+          Sorted by
+        </span>
+        <div class="select-wrapper">
+          <select [(ngModel)]="sortOption" (ngModelChange)="onSortChange($event)">
+            <option value="votes">Top votes</option>
+            <option value="views">Top views</option>
+            <option value="votesAsc">Least votes</option>
+            <option value="viewsAsc">Least views</option>
+          </select>
+        </div>
+        <span class="sort-active">Showing: {{ getSortLabel(sortOption) }}</span>
+      </div>
+    </div>
+
+    <div class="cards">
+      <article *ngFor="let hotel of displayedHabbo; let i = index" class="server-card">
+        <div class="server-card-left">
+          <div class="rank-badge">#{{ i + 1 }}</div>
+          <div class="card-body">
+            <div class="card-title">
+              <h3>{{ hotel.name }}</h3>
+              <span class="slug">{{ hotel.slug }}</span>
+            </div>
+            <p class="description">{{ hotel.description || 'No description yet.' }}</p>
+            <div class="meta">
+              <span class="tag">
+                <span class="material-icon">apartment</span> Habbo
+              </span>
+              <span class="votes">
+                <span class="material-icon">how_to_vote</span>
+                {{ hotel.totalVotes || 0 }} votes
+              </span>
+              <span class="votes">
+                <span class="material-icon">visibility</span>
+                {{ hotel.views || 0 }} views
+              </span>
+            </div>
+          </div>
+        </div>
+        <div class="server-card-right" *ngIf="hotel.bannerUrl; else bannerPlaceholder">
+          <img [src]="hotel.bannerUrl" alt="Banner for {{ hotel.name }}" />
+        </div>
+        <ng-template #bannerPlaceholder>
+          <div class="server-card-right placeholder">
+            <span class="material-icon">image_not_supported</span>
+            <span>No banner</span>
+          </div>
+        </ng-template>
+      </article>
+    </div>
+    <div *ngIf="!error && !loading && displayedHabbo.length === 0" class="server-card empty">
+      No servers yet. Be the first to register yours.
+    </div>
+    <div *ngIf="error" class="server-card error">{{ error }}</div>
+  </div>
+
+  <div *ngIf="selectedPool === 'runescape' || selectedPool === 'minecraft'" class="coming-soon">
+    <div class="coming-card">
+      <span class="material-icon">hourglass_top</span>
+      <div>
+        <h3>{{ selectedPool === 'runescape' ? 'RuneScape pool' : 'Minecraft pool' }}</h3>
+        <p>Coming soon, we’re wiring callbacks and rankings for this game type.</p>
+      </div>
+    </div>
+  </div>
+</section>

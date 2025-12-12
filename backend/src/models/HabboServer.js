@@ -14,10 +14,12 @@ const habboServerSchema = new Schema(
       duckets: { type: Number, default: 0 }
     },
     views: { type: Number, default: 0 },
-    totalVotes: { type: Number, default: 0 },
-    createdAt: { type: Date, default: Date.now }
+    totalVotes: { type: Number, default: 0 }
   },
-  { collection: 'habboservers' }
+  {
+    collection: 'habboservers',
+    timestamps: true
+  }
 );
 
 module.exports = model('HabboServer', habboServerSchema);

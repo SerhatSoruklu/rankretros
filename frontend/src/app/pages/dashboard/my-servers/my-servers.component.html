@@ -1,0 +1,215 @@
+<div class="panel">
+  <div class="panel-header">
+    <div>
+      <p class="eyebrow">My servers</p>
+      <h2>Servers you own</h2>
+      <p class="hint">Quick overview of your servers.</p>
+    </div>
+  </div>
+
+  <div class="card-grid" *ngIf="hotels.length">
+    <div
+      class="server-card"
+      *ngFor="let hotel of hotels"
+      [class.active]="hotel === selectedHotel"
+    >
+      <div class="server-header">
+        <div>
+          <div class="hotel-name">{{ hotel.name }}</div>
+          <div class="hotel-slug">{{ hotel.slug }}</div>
+        </div>
+        <div class="header-stats">
+          <span class="server-type-pill" [ngClass]="getServerTypeClass(hotel)">
+            <img class="server-icon" [src]="getServerIcon(hotel)" [alt]="getServerLabel(hotel)" />
+            <span>{{ getServerLabel(hotel) }}</span>
+          </span>
+          <span class="stat-item"><span class="material-icon">how_to_vote</span>{{ hotel.totalVotes || 0 }} Total votes</span>
+          <span class="stat-item"><span class="material-icon">visibility</span>{{ hotel.views || 0 }} Total views</span>
+        </div>
+      </div>
+
+      <div class="details" *ngIf="editingId !== (hotel._id || hotel.id)">
+        <div class="detail-line banner-line" *ngIf="hotel.bannerUrl">
+          <span class="label">Banner</span>
+          <div class="banner-preview">
+            <img [src]="hotel.bannerUrl" alt="Banner" (load)="onBannerLoad(hotel, $event)" />
+          </div>
+        </div>
+        <div class="detail-line banner-meta" *ngIf="bannerMeta[hotel._id || hotel.id] && editingId === (hotel._id || hotel.id)">
+          <span class="label"></span>
+          <span class="value">{{ bannerMeta[hotel._id || hotel.id] }}</span>
+        </div>
+        <div class="detail-line">
+          <span class="label">Description</span>
+          <span class="value">{{ hotel.description || '—' }}</span>
+        </div>
+        <div class="detail-line">
+          <span class="label">Callback URL</span>
+          <span class="value">{{ hotel.callbackUrl || '—' }}</span>
+        </div>
+        <div class="detail-line rewards">
+          <span class="label">Rewards</span>
+          <span class="badge credit">
+            <img src="/game-icons/habbo-icons/habbo-credit.png" alt="Credits" class="reward-icon" />
+            Credits {{ hotel.rewards?.credits || 0 }}
+          </span>
+          <span class="badge diamond">
+            <img src="/game-icons/habbo-icons/habbo-diamond.png" alt="Diamonds" class="reward-icon" />
+            Diamonds {{ hotel.rewards?.diamonds || 0 }}
+          </span>
+          <span class="badge duckets">
+            <img src="/game-icons/habbo-icons/habbo-ducket.png" alt="Duckets" class="reward-icon" />
+            Duckets {{ hotel.rewards?.duckets || 0 }}
+          </span>
+        </div>
+      </div>
+
+      <form
+        class="details edit-form"
+        *ngIf="editingId === (hotel._id || hotel.id)"
+        #editForm="ngForm"
+        (ngSubmit)="onSaveEdit(hotel, editForm)"
+      >
+        <mat-form-field appearance="fill">
+          <mat-label>Name</mat-label>
+          <input matInput [(ngModel)]="editingModel.name" name="name" required #nameModel="ngModel" />
+          <mat-error *ngIf="nameModel.invalid && nameModel.touched">
+            <mat-icon fontIcon="error" aria-hidden="true"></mat-icon>
+            Name is required.
+          </mat-error>
+        </mat-form-field>
+        <mat-form-field appearance="fill">
+          <mat-label>Slug</mat-label>
+          <input matInput [(ngModel)]="editingModel.slug" name="slug" required #slugModel="ngModel" />
+          <mat-error *ngIf="slugModel.invalid && slugModel.touched">
+            <mat-icon fontIcon="error" aria-hidden="true"></mat-icon>
+            Slug is required.
+          </mat-error>
+        </mat-form-field>
+        <mat-form-field appearance="fill">
+          <mat-label>Description</mat-label>
+          <textarea
+            matInput
+            [(ngModel)]="editingModel.description"
+            name="description"
+            rows="3"
+            required
+            #descriptionModel="ngModel"
+          ></textarea>
+          <mat-error *ngIf="descriptionModel.invalid && descriptionModel.touched">
+            <mat-icon fontIcon="error" aria-hidden="true"></mat-icon>
+            Description is required.
+          </mat-error>
+        </mat-form-field>
+        <div class="upload-field">
+          <div class="upload-top">
+            <p class="upload-label">Banner image</p>
+            <span class="upload-hint">PNG, JPG, WEBP or GIF (animated ok), up to 5MB. Best at 500x75 (~6.7:1).</span>
+          </div>
+          <div class="upload-actions">
+            <input #editBannerInput type="file" accept="image/*" hidden (change)="onEditingBannerSelected($event)" />
+            <button
+              mat-stroked-button
+              color="primary"
+              type="button"
+              (click)="editBannerInput.click()"
+              [disabled]="uploadingBanner"
+            >
+              <mat-icon fontIcon="cloud_upload" aria-hidden="true"></mat-icon>
+              {{ uploadingBanner ? 'Uploading…' : editingBannerPreview ? 'Replace banner' : 'Upload banner' }}
+            </button>
+            <mat-spinner *ngIf="uploadingBanner" diameter="20"></mat-spinner>
+          </div>
+          <div class="banner-preview" *ngIf="editingBannerPreview || editingModel.bannerUrl">
+            <img [src]="editingBannerPreview || editingModel.bannerUrl" alt="Banner preview" />
+            <button mat-icon-button type="button" aria-label="Remove banner" (click)="removeEditingBanner()">
+              <mat-icon fontIcon="close"></mat-icon>
+            </button>
+          </div>
+          <p class="banner-info" *ngIf="editingBannerInfo">{{ editingBannerInfo }}</p>
+          <p class="mat-error upload-error" *ngIf="editingBannerError">
+            <mat-icon fontIcon="error" aria-hidden="true"></mat-icon>
+            {{ editingBannerError }}
+          </p>
+        </div>
+        <mat-form-field appearance="fill">
+          <mat-label>Callback URL</mat-label>
+          <input matInput [(ngModel)]="editingModel.callbackUrl" name="callbackUrl" required #callbackModel="ngModel" />
+          <mat-error *ngIf="callbackModel.invalid && callbackModel.touched">
+            <mat-icon fontIcon="error" aria-hidden="true"></mat-icon>
+            Callback URL is required.
+          </mat-error>
+        </mat-form-field>
+        <div class="rewards-edit">
+          <mat-form-field appearance="fill">
+            <mat-label>Credits</mat-label>
+            <input matInput type="number" [(ngModel)]="editingModel.rewards.credits" name="credits" min="0" />
+          </mat-form-field>
+          <mat-form-field appearance="fill">
+            <mat-label>Diamonds</mat-label>
+            <input matInput type="number" [(ngModel)]="editingModel.rewards.diamonds" name="diamonds" min="0" />
+          </mat-form-field>
+          <mat-form-field appearance="fill">
+            <mat-label>Duckets</mat-label>
+            <input matInput type="number" [(ngModel)]="editingModel.rewards.duckets" name="duckets" min="0" />
+          </mat-form-field>
+        </div>
+        <div class="card-actions">
+          <div class="card-meta-inline left">
+            <span class="chip">
+              <span class="material-icon">event</span>
+              <span class="chip-text">Created at: {{ hotel.createdAt | date:'medium' }}</span>
+              <span class="time-badge">{{ getRelativeTime(hotel.createdAt) }}</span>
+            </span>
+            <span class="chip">
+              <span class="material-icon">update</span>
+              <span class="chip-text">{{ hotel.updatedAt ? ('Updated at: ' + (hotel.updatedAt | date:'medium')) : 'Never updated' }}</span>
+              <span class="time-badge secondary" *ngIf="hotel.updatedAt">{{ getRelativeTime(hotel.updatedAt) }}</span>
+            </span>
+          </div>
+          <div class="card-actions-buttons right">
+            <button type="button" class="pill" (click)="onCancelEdit()">
+              <mat-icon fontIcon="close"></mat-icon>
+              Cancel
+            </button>
+            <button type="submit" class="pill primary" [disabled]="uploadingBanner || editForm?.invalid">
+              <mat-icon fontIcon="save"></mat-icon>
+              Save
+            </button>
+          </div>
+        </div>
+      </form>
+
+      <div class="card-actions" *ngIf="editingId !== (hotel._id || hotel.id)">
+        <div class="card-meta-inline left">
+          <span class="chip">
+            <span class="material-icon">event</span>
+            <span class="chip-text">Created at: {{ hotel.createdAt | date:'medium' }}</span>
+            <span class="time-badge">{{ getRelativeTime(hotel.createdAt) }}</span>
+          </span>
+          <span class="chip">
+            <span class="material-icon">update</span>
+            <span class="chip-text">{{ hotel.updatedAt ? ('Updated at: ' + (hotel.updatedAt | date:'medium')) : 'Never updated' }}</span>
+            <span class="time-badge secondary" *ngIf="hotel.updatedAt">{{ getRelativeTime(hotel.updatedAt) }}</span>
+          </span>
+        </div>
+        <div class="card-actions-buttons right">
+          <button type="button" class="pill danger" (click)="onDeleteHotel(hotel)">
+            <mat-icon fontIcon="delete"></mat-icon>
+            Delete
+          </button>
+          <button type="button" class="pill" (click)="onSelectHotelForView(hotel)">
+            <mat-icon fontIcon="visibility"></mat-icon>
+            View
+          </button>
+          <button type="button" class="pill primary" (click)="onStartEdit(hotel)">
+            <mat-icon fontIcon="edit"></mat-icon>
+            Edit
+          </button>
+        </div>
+      </div>
+    </div>
+  </div>
+  <p *ngIf="!hotels.length && !loading" class="empty">No servers yet.</p>
+  <p *ngIf="error" class="empty error">{{ error }}</p>
+</div>

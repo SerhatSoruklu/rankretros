@@ -1,25 +1,21 @@
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import {
-  AfterViewInit,
   Component,
-  ElementRef,
   OnDestroy,
   OnInit,
-  ViewChild,
   ChangeDetectorRef
 } from '@angular/core';
-import { CreateHotelComponent } from '../create-hotel/create-hotel.component';
 import { ApiService } from '../../services/api.service';
 import { AuthService } from '../../services/auth.service';
-import ApexCharts from 'apexcharts';
 import { finalize, catchError } from 'rxjs/operators';
 import { EMPTY } from 'rxjs';
 import { ConfirmDialogComponent } from '../../dialogs/confirm-dialog/confirm-dialog.component';
-import { MatFormFieldModule } from '@angular/material/form-field';
-import { MatInputModule } from '@angular/material/input';
-import { MatButtonModule } from '@angular/material/button';
-import { MatIconModule } from '@angular/material/icon';
+import { MatSnackBar, MatSnackBarModule } from '@angular/material/snack-bar';
+import { OverviewComponent } from './overview/overview.component';
+import { AddServerComponent } from './add-server/add-server.component';
+import { MyServersComponent } from './my-servers/my-servers.component';
+import { SettingsComponent } from './settings/settings.component';
 
 @Component({
   selector: 'app-dashboard',
@@ -27,17 +23,17 @@ import { MatIconModule } from '@angular/material/icon';
   imports: [
     CommonModule,
     FormsModule,
-    CreateHotelComponent,
     ConfirmDialogComponent,
-    MatFormFieldModule,
-    MatInputModule,
-    MatButtonModule,
-    MatIconModule
+    MatSnackBarModule,
+    OverviewComponent,
+    AddServerComponent,
+    MyServersComponent,
+    SettingsComponent
   ],
   templateUrl: './dashboard.component.html',
   styleUrl: './dashboard.component.css'
 })
-export class DashboardComponent implements OnInit, AfterViewInit, OnDestroy {
+export class DashboardComponent implements OnInit, OnDestroy {
   hotels: any[] = [];
   selectedHotel: any | null = null;
   loading = false;
@@ -69,16 +65,11 @@ export class DashboardComponent implements OnInit, AfterViewInit, OnDestroy {
   private nowTimer: any;
   private nowMs = Date.now();
 
-  @ViewChild('votesChart') votesChartRef!: ElementRef;
-  @ViewChild('viewsChart') viewsChartRef!: ElementRef;
-
-  private votesChart?: ApexCharts;
-  private viewsChart?: ApexCharts;
-
   constructor(
     private readonly api: ApiService,
     private readonly auth: AuthService,
-    private readonly cdr: ChangeDetectorRef
+    private readonly cdr: ChangeDetectorRef,
+    private readonly snackBar: MatSnackBar
   ) {}
 
   ngOnInit(): void {
@@ -91,12 +82,7 @@ export class DashboardComponent implements OnInit, AfterViewInit, OnDestroy {
     }, 1000);
   }
 
-  ngAfterViewInit(): void {
-    this.renderChartsDeferred();
-  }
-
   ngOnDestroy(): void {
-    this.destroyCharts();
     if (this.nowTimer) {
       clearInterval(this.nowTimer);
       this.nowTimer = null;
@@ -140,7 +126,6 @@ export class DashboardComponent implements OnInit, AfterViewInit, OnDestroy {
           );
           this.selectedHotel = this.hotels.length ? this.hotels[0] : null;
           console.log('[Dashboard] hotels loaded', { count: this.hotels.length, selected: this.selectedHotel });
-          this.renderChartsDeferred();
           this.cdr.markForCheck();
         },
         error: (err) => {
@@ -156,14 +141,17 @@ export class DashboardComponent implements OnInit, AfterViewInit, OnDestroy {
     );
     this.selectedHotel = hotel;
     this.activeTab = 'list';
-    this.renderChartsDeferred();
     this.cdr.markForCheck();
   }
 
   selectHotel(hotel: any) {
     this.selectedHotel = hotel;
-    this.renderChartsDeferred();
     this.cdr.markForCheck();
+  }
+
+  onSidebarSelect(hotel: any) {
+    this.selectHotel(hotel);
+    Promise.resolve().then(() => this.setTab('dashboard'));
   }
 
   setTab(tab: 'dashboard' | 'add' | 'list' | 'settings') {
@@ -171,7 +159,6 @@ export class DashboardComponent implements OnInit, AfterViewInit, OnDestroy {
     if (tab === 'add') {
       this.pool = 'pick';
     }
-    this.renderChartsDeferred();
   }
 
   selectPool(pool: 'pick' | 'habbo' | 'runescape' | 'minecraft') {
@@ -200,20 +187,40 @@ export class DashboardComponent implements OnInit, AfterViewInit, OnDestroy {
     this.editingModel = {};
   }
 
-  saveEdit(hotel: any) {
+  saveEdit(payload: any) {
+    const hotel = payload?.hotel || payload;
     const id = hotel._id || hotel.id;
+    const previousBanner = payload?.previousBanner;
+    const newBannerKey = payload?.newBannerKey;
+
     this.api.updateHotel(id, this.editingModel).subscribe({
       next: (updated) => {
         this.hotels = this.hotels.map((h) => (h._id === id || h.id === id ? updated : h));
         if (this.selectedHotel && (this.selectedHotel._id === id || this.selectedHotel.id === id)) {
           this.selectedHotel = updated;
         }
+        if (newBannerKey && previousBanner && previousBanner !== this.editingModel.bannerUrl) {
+          this.api.deleteHabboBanner(previousBanner).subscribe({
+            error: () => {}
+          });
+        }
+        this.snackBar.open('Server updated successfully!', 'Close', {
+          duration: 3000,
+          horizontalPosition: 'center',
+          verticalPosition: 'bottom',
+          panelClass: ['custom-snackbar']
+        });
         this.cancelEdit();
-        this.renderChartsDeferred();
         this.cdr.markForCheck();
       },
       error: (err) => {
         this.error = err?.error?.message || 'Failed to update server.';
+        this.snackBar.open(this.error, 'Close', {
+          duration: 5000,
+          horizontalPosition: 'center',
+          verticalPosition: 'bottom',
+          panelClass: ['custom-snackbar']
+        });
       }
     });
   }
@@ -237,7 +244,10 @@ export class DashboardComponent implements OnInit, AfterViewInit, OnDestroy {
   }
 
   deleteHotel(hotel: any) {
-    this.deleteTarget = hotel;
+    const target = hotel || this.deleteTarget;
+    if (!target) return;
+
+    this.deleteTarget = target;
     this.deleteLoading = true;
     if (this.deleteTimer) {
       clearTimeout(this.deleteTimer);
@@ -248,7 +258,7 @@ export class DashboardComponent implements OnInit, AfterViewInit, OnDestroy {
       this.deleteTimer = null;
     }, 3000);
 
-    const id = hotel._id || hotel.id;
+    const id = target._id || target.id;
     this.api
       .deleteHotel(id)
       .pipe(
@@ -267,13 +277,27 @@ export class DashboardComponent implements OnInit, AfterViewInit, OnDestroy {
           if (this.selectedHotel && (this.selectedHotel._id === id || this.selectedHotel.id === id)) {
             this.selectedHotel = this.hotels[0] || null;
           }
+          if (target.bannerUrl) {
+            this.api.deleteHabboBanner(target.bannerUrl).subscribe({ next: () => {}, error: () => {} });
+          }
+          this.snackBar.open('Server deleted successfully!', 'Close', {
+            duration: 3000,
+            horizontalPosition: 'center',
+            verticalPosition: 'bottom',
+            panelClass: ['custom-snackbar']
+          });
           this.cancelEdit();
-          this.renderChartsDeferred();
           this.deleteTarget = null;
-          setTimeout(() => this.loadHotels(), 0);
+          this.cdr.markForCheck();
         },
         error: (err) => {
           this.error = err?.error?.message || 'Failed to delete server.';
+          this.snackBar.open(this.error, 'Close', {
+            duration: 5000,
+            horizontalPosition: 'center',
+            verticalPosition: 'bottom',
+            panelClass: ['custom-snackbar']
+          });
           this.showDeleteServerDialog = false;
           this.deleteTarget = null;
         }
@@ -344,242 +368,6 @@ export class DashboardComponent implements OnInit, AfterViewInit, OnDestroy {
   logout() {
     this.auth.logout();
     window.location.href = '/';
-  }
-
-  private destroyCharts() {
-    this.votesChart?.destroy();
-    this.viewsChart?.destroy();
-    this.votesChart = undefined;
-    this.viewsChart = undefined;
-  }
-
-  private renderChartsDeferred() {
-    setTimeout(() => this.renderChartsIfReady(), 0);
-  }
-
-  private renderChartsIfReady(attempt = 0) {
-    if (!this.selectedHotel && this.hotels.length) {
-      this.selectedHotel = this.hotels[0];
-      setTimeout(() => this.renderChartsIfReady(attempt + 1), 0);
-      this.cdr.markForCheck();
-      return;
-    }
-
-    if (this.activeTab !== 'dashboard' || !this.selectedHotel) {
-      return;
-    }
-
-    const votesEl = this.votesChartRef?.nativeElement;
-    const viewsEl = this.viewsChartRef?.nativeElement;
-
-    if (!votesEl || !viewsEl) {
-      if (attempt < 50) {
-        setTimeout(() => this.renderChartsIfReady(attempt + 1), 100);
-      }
-      return;
-    }
-
-    this.renderCharts();
-  }
-
-  private renderCharts() {
-    if (!this.selectedHotel) {
-      this.destroyCharts();
-      return;
-    }
-
-    // Clear previous charts and also clear container content to avoid stale SVG hiding the new one
-    this.destroyCharts();
-    const votesEl = this.votesChartRef?.nativeElement;
-    const viewsEl = this.viewsChartRef?.nativeElement;
-    if (votesEl) votesEl.innerHTML = '';
-    if (viewsEl) viewsEl.innerHTML = '';
-
-    const votesSeries = this.buildActualSeries('votes');
-    const viewsSeries = this.buildActualSeries('views');
-    const votesBundle = this.buildForecastBundle(votesSeries);
-    const viewsBundle = this.buildForecastBundle(viewsSeries);
-
-    const liveMarker = {
-      seriesIndex: 0,
-      dataPointIndex: votesBundle.liveIndex,
-      size: 8,
-      fillColor: '#22c55e',
-      strokeColor: '#0f172a',
-      shape: 'circle',
-      className: 'live-marker'
-    };
-
-    const baseChartConfig = {
-      chart: {
-        height: 260,
-        toolbar: { show: false },
-        sparkline: { enabled: false },
-        zoom: { enabled: false },
-        selection: { enabled: false },
-        pan: { enabled: false },
-        animations: { enabled: true }
-      }
-    };
-
-    const xAxisCommon = {
-      type: 'datetime' as const,
-      tickPlacement: 'on' as const,
-      crosshairs: { show: true, position: 'front' as const },
-      labels: {
-        datetimeFormatter: {
-          day: 'dd MMM'
-        }
-      }
-    };
-
-    this.votesChart = new ApexCharts(this.votesChartRef.nativeElement, {
-      chart: { ...baseChartConfig.chart, type: 'line' },
-      colors: ['#8ea2ff', '#7ce7a7'],
-      dataLabels: { enabled: false },
-      stroke: { curve: 'smooth', width: [3, 2], dashArray: [0, 8] },
-      series: [
-        { name: 'Votes', data: votesBundle.actualPadded },
-        { name: 'Forecast', data: votesBundle.forecastSeries }
-      ],
-      markers: {
-        size: 3,
-        colors: ['#8ea2ff'],
-        strokeColors: '#0f172a',
-        strokeWidth: 2,
-        discrete: [liveMarker]
-      },
-      xaxis: {
-        ...xAxisCommon,
-        min: votesBundle.rangeStart,
-        max: votesBundle.rangeEnd,
-        tickAmount: votesBundle.tickCount
-      },
-      yaxis: {
-        labels: { formatter: (val: number) => `${Math.round(val)}` },
-        crosshairs: { show: true, position: 'front', strokeDashArray: 3 }
-      },
-      tooltip: { theme: 'dark', shared: true, intersect: false, x: { format: 'dd MMM' } },
-      legend: { show: false },
-      grid: { strokeDashArray: 4 }
-    });
-    this.votesChart.render();
-
-    this.viewsChart = new ApexCharts(this.viewsChartRef.nativeElement, {
-      chart: { ...baseChartConfig.chart, type: 'bar' },
-      colors: ['#2dd4bf', '#f59e0b'],
-      dataLabels: { enabled: false },
-      stroke: { show: false },
-      series: [
-        { name: 'Views', type: 'column', data: viewsBundle.actualPadded },
-        {
-          name: 'Forecast',
-          type: 'column',
-          data: viewsBundle.forecastSeries.map((p, idx) =>
-            idx <= viewsBundle.liveIndex ? { ...p, y: null } : p
-          )
-        }
-      ],
-      plotOptions: {
-        bar: {
-          columnWidth: '58%',
-          borderRadius: 6,
-          rangeBarOverlap: false
-        }
-      },
-      markers: { size: 0 },
-      xaxis: {
-        ...xAxisCommon,
-        min: viewsBundle.rangeStart,
-        max: viewsBundle.rangeEnd,
-        tickAmount: viewsBundle.tickCount
-      },
-      yaxis: {
-        labels: { formatter: (val: number) => `${Math.round(val)}` },
-        crosshairs: { show: true, position: 'front', strokeDashArray: 3 }
-      },
-      tooltip: { theme: 'dark', shared: true, intersect: false, x: { format: 'dd MMM' } },
-      legend: { show: false },
-      grid: { strokeDashArray: 4 }
-    });
-    this.viewsChart.render();
-  }
-
-  private buildActualSeries(metric: 'votes' | 'views') {
-    const value =
-      metric === 'votes'
-        ? this.selectedHotel?.totalVotes ?? 0
-        : this.selectedHotel?.views ?? 0;
-    const dayMs = 24 * 60 * 60 * 1000;
-    const todayUtc = this.utcMidnightMs(new Date());
-    const days = 28;
-    const data: { x: number; y: number }[] = [];
-
-    for (let i = days - 1; i >= 0; i--) {
-      data.push({ x: todayUtc - i * dayMs, y: value });
-    }
-
-    return data;
-  }
-
-  private buildForecastBundle(series: { x: number; y: number }[]) {
-    if (!series.length) {
-      const now = Date.now();
-      return {
-        actualPadded: [],
-        forecastSeries: [],
-        liveIndex: 0,
-        rangeStart: now,
-        rangeEnd: now,
-        tickCount: 0
-      };
-    }
-
-    const dayMs = 24 * 60 * 60 * 1000;
-    const last = series[series.length - 1];
-    const prev = series[Math.max(series.length - 2, 0)];
-    const delta = last.y - prev.y;
-    const dailyStep = delta === 0 ? 0 : delta * 0.6;
-
-    const futurePoints: { x: number; y: number }[] = [];
-    for (let i = 1; i <= 3; i++) {
-      futurePoints.push({
-        x: last.x + i * dayMs,
-        y: Math.max(0, Math.round(last.y + dailyStep * i))
-      });
-    }
-
-    const actualPadded = [...series];
-    const forecastSeries: { x: number; y: number | null }[] = [
-      ...series.map((p, idx) => ({ x: p.x, y: idx === series.length - 1 ? p.y : null })),
-      ...futurePoints
-    ];
-
-    const rangeStart = actualPadded[0]?.x;
-    const rangeEnd = forecastSeries[forecastSeries.length - 1]?.x;
-    const tickCount = forecastSeries.length;
-
-    return {
-      actualPadded,
-      forecastSeries,
-      liveIndex: series.length - 1,
-      rangeStart,
-      rangeEnd,
-      tickCount
-    };
-  }
-
-  private utcMidnightMs(date: Date) {
-    return Date.UTC(date.getUTCFullYear(), date.getUTCMonth(), date.getUTCDate());
-  }
-
-  private hashSeed(str: string) {
-    let hash = 0;
-    for (let i = 0; i < str.length; i++) {
-      hash = (hash << 5) - hash + str.charCodeAt(i);
-      hash |= 0;
-    }
-    return Math.abs(hash);
   }
 
   getServerType(hotel: any): 'habbo' | 'runescape' | 'minecraft' | 'unknown' {

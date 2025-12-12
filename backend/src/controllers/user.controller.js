@@ -3,6 +3,7 @@ const User = require('../models/User');
 const HabboServer = require('../models/HabboServer');
 const Vote = require('../models/Vote');
 const RewardLog = require('../models/RewardLog');
+const { deleteFromSpaces } = require('../services/storage.service');
 
 async function updateProfile(req, res, next) {
   try {
@@ -75,6 +76,13 @@ async function deleteAccount(req, res, next) {
     const serverIds = servers.map((s) => s._id);
 
     if (serverIds.length) {
+      // Best-effort banner cleanup
+      for (const server of servers) {
+        if (server.bannerUrl) {
+          deleteFromSpaces(server.bannerUrl).catch(() => {});
+        }
+      }
+
       await Vote.deleteMany({ hotelId: { $in: serverIds } });
       await RewardLog.deleteMany({ hotelId: { $in: serverIds } });
       await HabboServer.deleteMany({ _id: { $in: serverIds } });

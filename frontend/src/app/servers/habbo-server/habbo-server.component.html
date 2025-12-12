@@ -1,0 +1,131 @@
+<section class="card">
+  <div class="header">
+    <div>
+      <p class="eyebrow">Server owner</p>
+      <h1>Register a Habbo Hotel</h1>
+      <p class="hint">Set your callback URL and rewards for votes.</p>
+    </div>
+    <img src="/game-icons/habbo-icon.png" alt="Habbo Hotel" class="hotel-logo" />
+  </div>
+
+  <form [formGroup]="form" (ngSubmit)="submit()">
+    <div class="grid two-cols">
+      <mat-form-field appearance="fill">
+        <mat-label>Name</mat-label>
+        <input matInput type="text" formControlName="name" placeholder="Habbo Retro" required />
+        <mat-error *ngIf="hasError('name')">
+          <mat-icon fontIcon="error" aria-hidden="true"></mat-icon>
+          Name is required.
+        </mat-error>
+      </mat-form-field>
+
+      <mat-form-field appearance="fill">
+        <mat-label>Slug</mat-label>
+        <input matInput type="text" formControlName="slug" placeholder="habbo-retro" required />
+        <mat-error *ngIf="hasError('slug')">
+          <mat-icon fontIcon="error" aria-hidden="true"></mat-icon>
+          Slug is required.
+        </mat-error>
+      </mat-form-field>
+    </div>
+
+    <div class="upload-field">
+      <div class="upload-top">
+        <p class="upload-label">Banner image</p>
+        <span class="upload-hint">PNG, JPG, WEBP or GIF (animated ok), up to 5MB. Best at 500x75 (~6.7:1).</span>
+      </div>
+      <div class="upload-actions">
+        <input #bannerInput type="file" accept="image/*" hidden (change)="onBannerSelected($event)" />
+        <button
+          mat-stroked-button
+          color="primary"
+          type="button"
+          (click)="bannerInput.click()"
+          [disabled]="uploadingBanner"
+        >
+          <mat-icon fontIcon="cloud_upload" aria-hidden="true"></mat-icon>
+          {{ uploadingBanner ? 'Uploading…' : bannerButtonLabel }}
+        </button>
+        <mat-spinner *ngIf="uploadingBanner" diameter="20"></mat-spinner>
+      </div>
+      <div class="banner-preview" *ngIf="pendingBannerPreview || bannerUrl">
+        <img [src]="pendingBannerPreview || bannerUrl" alt="Banner preview" />
+        <button mat-icon-button type="button" aria-label="Remove banner" (click)="removeBanner()">
+          <mat-icon fontIcon="close"></mat-icon>
+        </button>
+      </div>
+      <p class="banner-info" *ngIf="bannerInfo">{{ bannerInfo }}</p>
+      <p class="mat-error upload-error" *ngIf="bannerError">
+        <mat-icon fontIcon="error" aria-hidden="true"></mat-icon>
+        {{ bannerError }}
+      </p>
+    </div>
+
+    <div class="grid single-col">
+      <mat-form-field appearance="fill">
+        <mat-label>Callback URL</mat-label>
+        <input matInput type="url" formControlName="callbackUrl" placeholder="https://hotel.com/vote-callback" required />
+        <mat-error *ngIf="hasError('callbackUrl')">
+          <mat-icon fontIcon="error" aria-hidden="true"></mat-icon>
+          Callback URL is required.
+        </mat-error>
+      </mat-form-field>
+
+      <mat-form-field appearance="fill" class="full">
+        <mat-label>Description</mat-label>
+        <textarea
+          matInput
+          rows="3"
+          formControlName="description"
+          placeholder="Tell players about your hotel"
+          required
+        ></textarea>
+        <mat-error *ngIf="hasError('description')">
+          <mat-icon fontIcon="error" aria-hidden="true"></mat-icon>
+          Description is required.
+        </mat-error>
+      </mat-form-field>
+    </div>
+
+    <fieldset formGroupName="rewards" class="rewards">
+      <legend>Rewards per vote</legend>
+
+      <mat-form-field appearance="fill">
+        <mat-label>
+          <span class="label-with-icon">
+            <img src="/game-icons/habbo-icons/habbo-credit.png" alt="Credits" class="input-icon" />
+            Credits
+          </span>
+        </mat-label>
+        <input matInput type="number" formControlName="credits" min="0" />
+      </mat-form-field>
+
+      <mat-form-field appearance="fill">
+        <mat-label>
+          <span class="label-with-icon">
+            <img src="/game-icons/habbo-icons/habbo-diamond.png" alt="Diamonds" class="input-icon" />
+            Diamonds
+          </span>
+        </mat-label>
+        <input matInput type="number" formControlName="diamonds" min="0" />
+      </mat-form-field>
+
+      <mat-form-field appearance="fill">
+        <mat-label>
+          <span class="label-with-icon">
+            <img src="/game-icons/habbo-icons/habbo-ducket.png" alt="Duckets" class="input-icon" />
+            Duckets
+          </span>
+        </mat-label>
+        <input matInput type="number" formControlName="duckets" min="0" />
+      </mat-form-field>
+    </fieldset>
+
+    <button mat-raised-button color="primary" class="settings-btn" type="submit" [disabled]="loading || uploadingBanner">
+      {{ loading ? 'Saving…' : 'Create hotel' }}
+    </button>
+
+    <p *ngIf="error" class="error">{{ error }}</p>
+    <p *ngIf="success" class="success">{{ success }}</p>
+  </form>
+</section>

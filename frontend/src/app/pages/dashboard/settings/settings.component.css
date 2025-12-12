@@ -1,0 +1,212 @@
+.panel {
+  background: #0f162b;
+  border: 1px solid #1f2844;
+  border-radius: 12px;
+  padding: 1rem;
+}
+
+.panel-header {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 1rem;
+}
+
+.eyebrow {
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+  font-size: 0.8rem;
+  color: #8ea2ff;
+  margin: 0 0 0.35rem;
+}
+
+.hint {
+  color: #8ea2ff;
+  margin: 0.25rem 0 1rem;
+}
+
+.sr-only {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  padding: 0;
+  margin: -1px;
+  overflow: hidden;
+  clip: rect(0, 0, 0, 0);
+  border: 0;
+}
+
+.settings-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+  gap: 0.75rem;
+}
+
+.settings-card {
+  background: #0c1224;
+  border: 1px solid #1f2844;
+  border-radius: 12px;
+  padding: 1rem;
+  display: flex;
+  flex-direction: column;
+  gap: 0.6rem;
+}
+
+.settings-card h3 {
+  margin: 0;
+  display: flex;
+  align-items: center;
+  gap: 0.35rem;
+}
+
+.settings-card mat-form-field {
+  width: 100%;
+}
+
+.settings-btn {
+  width: 100%;
+  gap: 0.35rem;
+  justify-content: center;
+}
+
+.settings-btn[disabled] {
+  color: #f7f9ff !important;
+  background: #1f2844 !important;
+  opacity: 0.8;
+}
+
+.settings-btn[disabled] mat-icon {
+  color: #f7f9ff !important;
+}
+
+.settings-card .mat-mdc-icon-button .mat-mdc-button-touch-target {
+  width: 32px;
+  height: 32px;
+}
+
+.settings-card .mat-mdc-icon-button .mat-icon {
+  color: #8ea2ff;
+}
+
+.danger-card {
+  border-color: #ff6b6b;
+  background: rgba(255, 107, 107, 0.05);
+}
+
+.alert {
+  padding: 0.6rem 0.75rem;
+  border-radius: 8px;
+  font-weight: 600;
+  margin: 0;
+}
+
+.alert.success {
+  background: rgba(46, 204, 113, 0.12);
+  border: 1px solid rgba(46, 204, 113, 0.35);
+  color: #baf7d5;
+}
+
+.alert.error {
+  background: rgba(255, 107, 107, 0.12);
+  border: 1px solid rgba(255, 107, 107, 0.35);
+  color: #ffb4b4;
+}
+
+.pill {
+  border: 1px solid #1f2844;
+  background: #0c1224;
+  color: #c8d2f0;
+  padding: 0.45rem 0.9rem;
+  border-radius: 12px;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  display: inline-flex;
+  align-items: center;
+  gap: 0.35rem;
+}
+
+.pill.primary {
+  background: #8ea2ff;
+  color: #0c1224;
+  border-color: #8ea2ff;
+  font-weight: 700;
+}
+
+.pill.ghost {
+  background: transparent;
+}
+
+.pill:hover {
+  border-color: #2a3353;
+  box-shadow: 0 4px 14px rgba(0, 0, 0, 0.2);
+}
+
+.pill.primary:hover {
+  box-shadow: 0 4px 18px rgba(142, 162, 255, 0.25);
+}
+
+.pill:disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
+}
+
+.pill.danger {
+  border-color: #ff6b6b;
+  color: #ff6b6b;
+  background: transparent;
+}
+
+.pill.danger:hover {
+  box-shadow: 0 4px 16px rgba(255, 107, 107, 0.25);
+}
+
+:host-context(.theme-light) .panel {
+  background: #f7f8fb !important;
+  border-color: #d5deeb !important;
+}
+
+:host-context(.theme-light) .profile-card,
+:host-context(.theme-light) .password-card {
+  background: #ffffff !important;
+  border-color: #d5deeb !important;
+  color: #0f1a2d !important;
+}
+
+:host-context(.theme-light) .profile-card .mat-mdc-text-field-wrapper,
+:host-context(.theme-light) .password-card .mat-mdc-text-field-wrapper {
+  background: #f7f8fb !important;
+  border-radius: 8px;
+  border: 1px solid #d5deeb;
+}
+
+:host-context(.theme-light) .profile-card .mat-mdc-text-field-wrapper .mat-mdc-form-field-flex,
+:host-context(.theme-light) .password-card .mat-mdc-text-field-wrapper .mat-mdc-form-field-flex {
+  background: transparent !important;
+}
+
+:host-context(.theme-light) .profile-card .mat-mdc-form-field-infix,
+:host-context(.theme-light) .password-card .mat-mdc-form-field-infix {
+  color: #0f1a2d !important;
+}
+
+:host-context(.theme-light) .profile-card .mat-mdc-icon-button .mat-icon,
+:host-context(.theme-light) .password-card .mat-mdc-icon-button .mat-icon {
+  color: #5269c6 !important;
+}
+
+:host-context(.theme-light) .danger-card {
+  background: rgba(255, 107, 107, 0.08) !important;
+  border-color: #ffb4b4 !important;
+}
+
+:host-context(.theme-light) .pill {
+  background: #f7f8fb !important;
+  border-color: #d5deeb !important;
+  color: #0f1a2d !important;
+}
+
+:host-context(.theme-light) .pill.primary {
+  background: #8ea2ff !important;
+  border-color: #8ea2ff !important;
+  color: #0c1224 !important;
+}

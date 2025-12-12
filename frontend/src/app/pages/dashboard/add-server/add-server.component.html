@@ -1,0 +1,63 @@
+<div class="panel">
+  <div class="panel-header">
+    <div>
+      <p class="eyebrow">{{ eyebrowLabel }}</p>
+      <h2><span class="material-icon">add_business</span> {{ headerTitle }}</h2>
+      <p *ngIf="pool === 'pick'" class="hint">Choose a server type to register.</p>
+    </div>
+  </div>
+
+  <div *ngIf="pool === 'pick'" class="pool-grid">
+    <button type="button" class="pool-card habbo" (click)="selectPool('habbo')">
+      <div class="pool-text">
+        <div class="pool-title"><span class="material-icon">apartment</span> Habbo Hotel</div>
+        <p>Create or manage retro hotel listings.</p>
+      </div>
+      <div class="pool-logo">
+        <img src="/game-icons/habbo-icon.png" alt="Habbo Hotel logo" />
+      </div>
+    </button>
+    <button type="button" class="pool-card runescape" (click)="selectPool('runescape')">
+      <div class="pool-text">
+        <div class="pool-title"><span class="material-icon">swords</span> RuneScape</div>
+        <p>Coming soon. Callbacks and rewards in progress.</p>
+      </div>
+      <div class="pool-logo">
+        <img src="/game-icons/runescape-icon.png" alt="RuneScape logo" />
+      </div>
+    </button>
+    <button type="button" class="pool-card minecraft" (click)="selectPool('minecraft')">
+      <div class="pool-text">
+        <div class="pool-title"><span class="material-icon">gavel</span> Minecraft</div>
+        <p>Coming soon. Votes and server pings in progress.</p>
+      </div>
+      <div class="pool-logo">
+        <img src="/game-icons/minecraft-icon.png" alt="Minecraft logo" />
+      </div>
+    </button>
+  </div>
+
+  <div *ngIf="pool === 'pick'" class="coming-soon-banner">
+    <span class="material-icon">rocket_launch</span>
+    <p>More servers coming soon</p>
+  </div>
+
+  <div *ngIf="pool === 'habbo'">
+    <div class="pool-header">
+      <button class="pill ghost" type="button" (click)="selectPool('pick')">
+        <span class="material-icon">arrow_back</span> Back to server pools
+      </button>
+      <span class="pill primary">Habbo Hotel</span>
+    </div>
+    <app-habbo-server (hotelCreated)="onHotelCreated($event)"></app-habbo-server>
+  </div>
+
+  <div *ngIf="pool === 'runescape' || pool === 'minecraft'" class="coming-soon">
+    <p class="eyebrow">Coming soon</p>
+    <h3>{{ pool === 'runescape' ? 'RuneScape' : 'Minecraft' }} servers</h3>
+    <p class="hint">We're wiring callbacks and rewards for this game type.</p>
+    <button class="pill ghost" type="button" (click)="selectPool('pick')">
+      <span class="material-icon">arrow_back</span> Back to server pools
+    </button>
+  </div>
+</div>

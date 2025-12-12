@@ -1,0 +1,91 @@
+<div class="panel">
+  <div class="panel-header">
+    <div>
+      <p class="eyebrow">Account</p>
+      <h2><span class="material-icon">person</span> Settings</h2>
+      <p class="hint">Update your profile, password, or delete your account.</p>
+    </div>
+    <button class="pill ghost" type="button" (click)="onLogout()">
+      <span class="material-icon">logout</span> Logout
+    </button>
+  </div>
+
+  <div class="settings-grid">
+    <form class="settings-card profile-card" (ngSubmit)="onSaveProfile()">
+      <h3><span class="material-icon">badge</span> Profile</h3>
+      <mat-form-field appearance="fill">
+        <mat-label>Username</mat-label>
+        <input matInput [(ngModel)]="profile.username" name="username" required />
+      </mat-form-field>
+      <mat-form-field appearance="fill">
+        <mat-label>Email</mat-label>
+        <input matInput type="email" [(ngModel)]="profile.email" name="email" required />
+      </mat-form-field>
+      <button mat-raised-button color="primary" class="settings-btn" type="submit">
+        <mat-icon>save</mat-icon>
+        Save profile
+      </button>
+      <div *ngIf="profileMessage" class="alert success">{{ profileMessage }}</div>
+      <div *ngIf="profileError" class="alert error">{{ profileError }}</div>
+    </form>
+
+    <form class="settings-card password-card" (ngSubmit)="onUpdatePassword()">
+      <h3><span class="material-icon">lock</span> Password</h3>
+      <input
+        class="sr-only"
+        type="text"
+        name="username"
+        autocomplete="username"
+        [value]="profile.username"
+        tabindex="-1"
+        aria-hidden="true"
+      />
+      <mat-form-field appearance="fill">
+        <mat-label>Current password</mat-label>
+        <input
+          matInput
+          [type]="showCurrent ? 'text' : 'password'"
+          [(ngModel)]="passwordForm.currentPassword"
+          name="currentPassword"
+          required
+          autocomplete="current-password"
+        />
+        <button mat-icon-button matSuffix type="button" (click)="onToggleShowCurrent()">
+          <mat-icon>{{ showCurrent ? 'visibility_off' : 'visibility' }}</mat-icon>
+        </button>
+      </mat-form-field>
+      <mat-form-field appearance="fill">
+        <mat-label>New password</mat-label>
+        <input
+          matInput
+          [type]="showNew ? 'text' : 'password'"
+          [(ngModel)]="passwordForm.newPassword"
+          name="newPassword"
+          required
+          autocomplete="new-password"
+        />
+        <button mat-icon-button matSuffix type="button" (click)="onToggleShowNew()">
+          <mat-icon>{{ showNew ? 'visibility_off' : 'visibility' }}</mat-icon>
+        </button>
+      </mat-form-field>
+      <button
+        mat-raised-button
+        color="primary"
+        class="settings-btn"
+        type="submit"
+        [disabled]="passwordLoading"
+      >
+        <mat-icon>vpn_key</mat-icon>
+        {{ passwordLoading ? 'Updating…' : 'Update password' }}
+      </button>
+      <div *ngIf="passwordMessage" class="alert success">{{ passwordMessage }}</div>
+      <div *ngIf="passwordError" class="alert error">{{ passwordError }}</div>
+    </form>
+
+    <div class="settings-card danger-card">
+      <h3><span class="material-icon">warning</span> Delete account</h3>
+      <p class="hint">This will delete your account and all your listings/servers.</p>
+      <button class="pill danger" type="button" (click)="onConfirmDeleteAccount()">Delete account</button>
+    </div>
+  </div>
+</div>

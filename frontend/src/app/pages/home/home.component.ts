@@ -1,16 +1,16 @@
 import { CommonModule } from '@angular/common';
 import { Component, OnInit, ChangeDetectorRef } from '@angular/core';
-import { RouterLink } from '@angular/router';
-import { FormsModule } from '@angular/forms';
 import { ApiService } from '../../services/api.service';
 import { AuthService } from '../../services/auth.service';
+import { HomeHeroComponent } from './home-hero.component';
+import { HomePoolsComponent } from './home-pools.component';
 
 @Component({
   selector: 'app-home',
   standalone: true,
-  imports: [CommonModule, RouterLink, FormsModule],
+  imports: [CommonModule, HomeHeroComponent, HomePoolsComponent],
   templateUrl: './home.component.html',
-  styleUrls: ['./home.component.css']
+  styleUrl: './home.component.css'
 })
 export class HomeComponent implements OnInit {
   hotels: any[] = [];
@@ -40,6 +40,10 @@ export class HomeComponent implements OnInit {
 
   selectPool(pool: 'habbo' | 'runescape' | 'minecraft') {
     this.selectedPool = pool;
+  }
+
+  onSortChange(option: 'votes' | 'views' | 'viewsAsc' | 'votesAsc') {
+    this.sortOption = option;
   }
 
   get displayedHabbo() {

@@ -4,13 +4,14 @@
   align-items: center;
   gap: 1rem;
   padding: 1rem 20px;
-  color: #f7f9ff;
+  color: var(--text-primary, #f7f9ff);
   padding-bottom: 40px;
+  background: transparent;
 }
 
 .brand a {
   font-weight: 800;
-  color: #f7f9ff;
+  color: var(--text-primary, #f7f9ff);
   text-decoration: none;
   font-size: 2rem;
 }
@@ -23,11 +24,11 @@
 }
 
 .ghost {
-  color: #c8d2f0;
+  color: var(--text-secondary, #c8d2f0);
   text-decoration: none;
   padding: 0.5rem 0.9rem;
   border-radius: 8px;
-  border: 1px solid #1f2844;
+  border: 1px solid var(--border, #1f2844);
   display: inline-flex;
   align-items: center;
   justify-content: center;
@@ -37,8 +38,8 @@
 }
 
 .primary {
-  color: #0c1224;
-  background: #8ea2ff;
+  color: var(--btn-primary-text, #0c1224);
+  background: var(--btn-primary-bg, #8ea2ff);
   padding: 0.65rem 1.1rem;
   border-radius: 8px;
   text-decoration: none;
@@ -52,10 +53,10 @@
 }
 
 .user-pill {
-  background: #141c33;
+  background: var(--pill-bg, #141c33);
   padding: 0.55rem 0.95rem;
   border-radius: 999px;
-  color: #8ea2ff;
+  color: var(--accent, #8ea2ff);
   display: inline-flex;
   align-items: center;
   gap: 0.35rem;
@@ -65,7 +66,7 @@
   font-size: 24px;
   height: 24px;
   width: 24px;
-  color: #8ea2ff;
+  color: var(--accent, #8ea2ff);
 }
 
 .user-name {
@@ -83,7 +84,7 @@
 }
 
 .user-email {
-  color: #d6defc;
+  color: var(--text-primary, #d6defc);
 }
 
 @keyframes pulse {
@@ -102,20 +103,20 @@
 }
 
 .ghost:hover {
-  border-color: #8ea2ff;
-  color: #f7f9ff;
+  border-color: var(--accent, #8ea2ff);
+  color: var(--text-primary, #f7f9ff);
   box-shadow: 0 4px 14px rgba(0, 0, 0, 0.25);
 }
 
 .primary:hover {
-  background: #9fb2ff;
+  background: var(--btn-primary-hover, #9fb2ff);
   box-shadow: 0 6px 16px rgba(142, 162, 255, 0.35);
 }
 
 button {
   background: transparent;
-  border: 1px solid #1f2844;
-  color: #c8d2f0;
+  border: 1px solid var(--border, #1f2844);
+  color: var(--text-secondary, #c8d2f0);
   padding: 0.65rem 1.1rem;
   border-radius: 8px;
   cursor: pointer;
@@ -148,4 +149,51 @@ button .mat-icon {
   .auth {
     justify-content: flex-start;
   }
+}
+
+.theme-toggle {
+  border: 1px solid var(--border, #1f2844);
+  background: var(--pill-bg, #141c33);
+  color: var(--text-primary, #f7f9ff);
+  border-radius: 999px;
+  padding: 0.25rem 0.55rem;
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5rem;
+  transition: all 0.2s ease;
+}
+
+.theme-toggle:hover {
+  transform: translateY(-1px);
+  box-shadow: 0 6px 16px rgba(0, 0, 0, 0.2);
+}
+
+.toggle-track {
+  width: 42px;
+  height: 22px;
+  border-radius: 999px;
+  background: var(--border, #1f2844);
+  position: relative;
+  display: inline-block;
+}
+
+.toggle-thumb {
+  position: absolute;
+  top: 2px;
+  left: 2px;
+  width: 18px;
+  height: 18px;
+  border-radius: 50%;
+  background: #ffd166;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.25);
+  transition: transform 0.25s ease, background 0.25s ease;
+}
+
+.toggle-thumb.dark {
+  transform: translateX(20px);
+  background: #8ea2ff;
+}
+
+.toggle-label {
+  font-weight: 700;
 }

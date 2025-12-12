@@ -1,0 +1,135 @@
+.panel {
+  background: #0f162b;
+  border: 1px solid #1f2844;
+  border-radius: 12px;
+  padding: 1rem;
+}
+
+.panel-header {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 1rem;
+}
+
+.eyebrow {
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+  font-size: 0.8rem;
+  color: #8ea2ff;
+  margin: 0 0 0.35rem;
+}
+
+.hint {
+  color: #8ea2ff;
+  margin: 0.25rem 0 1rem;
+}
+
+.chart-grid {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: 1rem;
+  position: relative;
+}
+
+.chart-card {
+  background: #0c1224;
+  border: 1px solid #1f2844;
+  border-radius: 12px;
+  padding: 0.75rem;
+  min-height: 240px;
+}
+
+:host-context(.theme-light) .panel {
+  background: #ffffff;
+  border-color: #d5deeb;
+  color: #0f1a2d;
+}
+
+:host-context(.theme-light) .chart-card {
+  background: #f7f8fb;
+  border-color: #d5deeb;
+  color: #0f1a2d;
+}
+
+:host-context(.theme-light) .chart-title,
+:host-context(.theme-light) .chart-desc,
+:host-context(.theme-light) .eyebrow,
+:host-context(.theme-light) .hint {
+  color: #2b3550;
+}
+
+.chart-host {
+  height: 260px;
+}
+
+.chart-title {
+  margin-bottom: 0.25rem;
+  font-weight: 700;
+  display: inline-flex;
+  align-items: center;
+  gap: 0.35rem;
+}
+
+.chart-desc {
+  color: #8ea2ff;
+  margin: 0 0 0.35rem;
+  font-size: 0.95rem;
+}
+
+.chart-grid.dimmed {
+  opacity: 0.6;
+}
+
+.no-data {
+  position: absolute;
+  inset: 0;
+  display: grid;
+  place-items: center;
+  color: #8ea2ff;
+  font-weight: 600;
+  background: rgba(12, 18, 36, 0.82);
+  border-radius: 12px;
+  margin: -10px;
+}
+
+:host-context(.theme-light) .no-data {
+  background: rgb(12 18 36 / 9%);
+  color: #2b3550;
+}
+
+::ng-deep .apexcharts-marker.live-marker {
+  animation: livePulse 1.4s ease-out infinite, liveScale 1.4s ease-in-out infinite;
+  filter: drop-shadow(0 0 10px rgba(34, 197, 94, 0.9));
+  transform-origin: center;
+  fill: #22c55e !important;
+  stroke: #0f172a !important;
+  stroke-width: 2px;
+}
+
+@keyframes livePulse {
+  0% {
+    box-shadow: 0 0 0 0 rgba(34, 197, 94, 0.55);
+    opacity: 1;
+  }
+  60% {
+    box-shadow: 0 0 0 20px rgba(34, 197, 94, 0);
+    opacity: 0.85;
+  }
+  100% {
+    box-shadow: 0 0 0 0 rgba(34, 197, 94, 0);
+    opacity: 1;
+  }
+}
+
+@keyframes liveScale {
+  0% {
+    transform: scale(1);
+  }
+  50% {
+    transform: scale(1.35);
+  }
+  100% {
+    transform: scale(1);
+  }
+}

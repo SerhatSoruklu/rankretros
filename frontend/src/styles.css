@@ -7,6 +7,165 @@
 html, body {
   margin: 0;
   padding: 0;
+  height: 100%;
+  width: 100%;
+}
+
+body {
+  position: relative;
+  background: var(--bg-base, #0a1020);
+  color: var(--text-primary, #f7f9ff);
+  transition: background 0.3s ease, color 0.3s ease;
+}
+
+:root.theme-light {
+  --bg-base: #f2f5fb;
+  --text-primary: #0f1a2d;
+  --text-secondary: #3c4762;
+  --border: #d5deeb;
+  --pill-bg: #eef2fb;
+  --accent: #5269c6;
+  --btn-primary-bg: #8ea2ff;
+  --btn-primary-text: #0c1224;
+  --btn-primary-hover: #9fb2ff;
+  --surface: #ffffff;
+  --surface-muted: #f7f8fb;
+  --surface-contrast: #0f1a2d;
+}
+
+:root.theme-dark {
+  --bg-base: #0a1020;
+  --text-primary: #f7f9ff;
+  --text-secondary: #c8d2f0;
+  --border: #1f2844;
+  --pill-bg: #141c33;
+  --accent: #8ea2ff;
+  --btn-primary-bg: #8ea2ff;
+  --btn-primary-text: #0c1224;
+  --btn-primary-hover: #9fb2ff;
+  --surface: #0f162b;
+  --surface-muted: #0c1224;
+  --surface-contrast: #f7f9ff;
+}
+
+/* Global theming overrides */
+:root.theme-light .micro-chart,
+:root.theme-light app-home-hero .micro-chart {
+  background: #0f162b;
+}
+
+:root.theme-light .panel,
+:root.theme-light .card,
+:root.theme-light .server-card,
+:root.theme-light .coming-card,
+:root.theme-light .coming-soon,
+:root.theme-light .app-header,
+:root.theme-light .dashboard,
+:root.theme-light .layout,
+:root.theme-light .content,
+:root.theme-light .sidebar,
+:root.theme-light .chart-card,
+:root.theme-light .list-header,
+:root.theme-light .tab-bar {
+  color: var(--text-primary) !important;
+  border-color: var(--border) !important;
+}
+
+:root.theme-light .panel .eyebrow,
+:root.theme-light .card .eyebrow,
+:root.theme-light .server-card .eyebrow,
+:root.theme-light .panel .hint,
+:root.theme-light .card .hint,
+:root.theme-light .server-card .hint,
+:root.theme-light .tab-bar .tab {
+  color: #6b7b8f !important;
+}
+
+:root.theme-light .chart-card {
+  background: var(--surface-muted, #f7f8fb) !important;
+}
+
+:root.theme-light app-home-hero .hero {
+  background: #f7f8fb;
+  color: var(--text-primary);
+}
+
+:root.theme-light app-home-hero .hero-card,
+:root.theme-light app-home-hero .stat,
+:root.theme-light app-home-hero .logo-item {
+  background: var(--surface);
+  border-color: var(--border);
+  color: var(--text-primary);
+}
+
+:root.theme-light .primary-btn {
+  color: var(--btn-primary-text);
+}
+
+:root.theme-light .sidebar .hotel-item,
+:root.theme-light .sidebar .hotel-item.active {
+  background: var(--surface);
+  border-color: var(--border);
+  color: var(--text-primary);
+}
+
+:root.theme-light .tab-bar {
+  border-color: var(--border);
+  background: var(--surface) !important;
+}
+
+:root.theme-light .tab-bar .tab {
+  background: #f7f8fb !important;
+  border-color: var(--border) !important;
+  color: #2b3550 !important;
+}
+
+:root.theme-light .tab-bar .tab.active {
+  background: #eef2fb !important;
+  color: #5269c6 !important;
+  box-shadow: 0 0 0 1px var(--border) !important;
+}
+:root.theme-light .panel,
+:root.theme-light .card,
+:root.theme-light .server-card,
+:root.theme-light .coming-card,
+:root.theme-light .coming-soon,
+:root.theme-light .app-header,
+:root.theme-light .dashboard,
+:root.theme-light .layout,
+:root.theme-light .content,
+:root.theme-light .sidebar {
+  color: var(--text-primary) !important;
+  border-color: var(--border) !important;
+}
+
+:root.theme-light .panel .eyebrow,
+:root.theme-light .card .eyebrow,
+:root.theme-light .server-card .eyebrow {
+  color: #6b7b8f !important;
+}
+
+:root.theme-light .panel .hint,
+:root.theme-light .card .hint,
+:root.theme-light .server-card .hint {
+  color: #54657d !important;
+}
+
+:root.theme-light app-home-hero .hero {
+  background: linear-gradient(135deg, #ffffff, #f2f5fb);
+  color: var(--text-primary);
+}
+
+:root.theme-light app-home-hero .hero-card,
+:root.theme-light app-home-hero .stat,
+:root.theme-light app-home-hero .logo-item {
+  background: var(--surface);
+  border-color: var(--border);
+  color: var(--text-primary);
+}
+
+:root.theme-light .primary-btn {
+  color: var(--btn-primary-text);
 }
 
 .material-icon {
@@ -20,4 +179,39 @@ html, body {
   vertical-align: middle;
   font-size: 18px;
   margin-right: 6px;
+}
+
+/* Fix CDK Overlay Container */
+.cdk-overlay-container {
+  position: fixed !important;
+  top: 0 !important;
+  left: 0 !important;
+  right: 0 !important;
+  bottom: 0 !important;
+  z-index: 1000 !important;
+  pointer-events: none !important;
+}
+
+/* MatSnackBar positioning */
+.cdk-overlay-pane {
+  pointer-events: auto !important;
+}
+
+/* Custom snackbar positioning - bottom center */
+.custom-snackbar {
+  position: fixed !important;
+  bottom: 16px !important;
+  left: 50% !important;
+  transform: translateX(-50%) !important;
+  top: auto !important;
+}
+
+/* Target the overlay pane containing custom snackbar */
+.cdk-overlay-pane:has(.custom-snackbar) {
+  position: fixed !important;
+  bottom: 16px !important;
+  left: 50% !important;
+  transform: translateX(-50%) !important;
+  top: auto !important;
+  right: auto !important;
 }
